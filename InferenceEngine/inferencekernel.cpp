@@ -1,6 +1,7 @@
 ﻿#include <QTextStream>
 #include <QDebug>
 #include "inferencekernel.h"
+#include <algorithm>
 
 //Remember that you change the Worksapce constructor to private,
 //Making IK friend of Workspace and having interface functions to Workspace
@@ -17,28 +18,28 @@ bool InferenceKernel::askForValue(int entry){
     QString symbol= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).first());
 
     if(m_pWS->m_vAskedAtoms.contains(entry)){
-        qDebug()<<"These atoms are asked already"<<symbol<<endl;
+        qDebug()<<"These atoms are asked already"<<symbol<<Qt::endl;
         return false;
     }
 
     m_pWS->m_vAskedAtoms.append(entry);
 
-    out<<"Asking for the value of"<<symbol<<endl;
-    out<<"Do you know the value? \n"<<"1. Yes \t 2. No"<<endl;
+    out<<"Asking for the value of"<<symbol<<Qt::endl;
+    out<<"Do you know the value? \n"<<"1. Yes \t 2. No"<<Qt::endl;
      in>>selection;
 
     if(selection.toInt()==1 || selection=="Yes"){
         QString valueSelection;
         valueSelection.clear();
 
-        out<<"Which is its value? \n 1 or 0"<<endl;
+        out<<"Which is its value? \n 1 or 0"<<Qt::endl;
         in>>valueSelection;
         if(valueSelection.toInt()==1 || valueSelection.toInt()==0){
             setValue2Atom(entry,valueSelection.toInt());
             return true;
         }
         else{
-            qDebug()<<"Invalid value for atom:"<<symbol<<endl;
+            qDebug()<<"Invalid value for atom:"<<symbol<<Qt::endl;
             return false;
         }
     }
@@ -47,22 +48,22 @@ bool InferenceKernel::askForValue(int entry){
 
 bool InferenceKernel::setValue2Atom(int entry, bool value){
     if(entry == -1){
-        qDebug()<<"The atom doesn't exist in the tree"<<endl;
+        qDebug()<<"The atom doesn't exist in the tree"<<Qt::endl;
         return false;
     }
     QString relAtom= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).first());
 
     if(!m_pWS->m_mRelevantAtoms.contains(entry)){
         m_pWS->m_mRelevantAtoms.insert(entry,value);
-        qDebug()<<"Relevant atom added: "<<relAtom<<endl;
+        qDebug()<<"Relevant atom added: "<<relAtom<<Qt::endl;
         return true;
     }
     if(m_pWS->m_mRelevantAtoms.value(entry) != value){
         qDebug()<<"Invalid attempt to set different value to the atom"<<
-                  relAtom<<endl;
+                  relAtom<<Qt::endl;
         return false;
     }
-    qDebug()<<"Atom is in the container already. Ignored: "<<relAtom<<endl;
+    qDebug()<<"Atom is in the container already. Ignored: "<<relAtom<<Qt::endl;
     return false;
 }
 
@@ -131,7 +132,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
     case PROPNode::IF:
         if(ruleType == Workspace::RuleType::ModusTollens){
             qDebug()<<"The consequent of rule\t"<< m_pWS->m_vRules.indexOf(entry)+1<<
-                      "has a value of:\t"<<second<<endl;
+                      "has a value of:\t"<<second<<Qt::endl;
             if(second==1 || second==0)
                 m_pWS->m_mConsequentsValue.insert(entry,second);
             else
@@ -140,7 +141,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
         }
         //is Antecedent
         qDebug()<<"The antecedent of rule\t"<< m_pWS->m_vRules.indexOf(entry)+1<<
-                  "has a value of:\t"<<first<<endl;
+                  "has a value of:\t"<<first<<Qt::endl;
 
         if(first != 1)
             return -1;
@@ -192,7 +193,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
         break;
 
     default:
-        qDebug()<<"Unsopported Type or unknown error at eval()"<<endl;
+        qDebug()<<"Unsopported Type or unknown error at eval()"<<Qt::endl;
     }
     return 0;
 }
@@ -282,7 +283,7 @@ bool InferenceKernel::isClousure(int entry){
 
 void promptError(int error){
     if(error == 0)
-        qDebug()<<"The entry is not correct for this function"<<endl;
+        qDebug()<<"The entry is not correct for this function"<<Qt::endl;
 }
 
 bool InferenceKernel::isAbleModusPonens(int entry){
@@ -301,7 +302,7 @@ bool InferenceKernel::isAbleModusPonens(int entry){
             return false;
 
         m_pWS->m_mRuleTypes.insert(entry,Workspace::RuleType::ModusPonens);
-        qDebug()<<"Rule: "<<entry<<" Is ModusPonens"<<endl;
+        qDebug()<<"Rule: "<<entry<<" Is ModusPonens"<<Qt::endl;
         return true;
     }
     else{
@@ -326,7 +327,7 @@ bool InferenceKernel::isAbleModusTollens(int entry){
             return false;
 
         m_pWS->m_mRuleTypes.insert(entry,Workspace::RuleType::ModusTollens);
-        qDebug()<<"Rule: "<<entry<<" Is ModusTollens"<<endl;
+        qDebug()<<"Rule: "<<entry<<" Is ModusTollens"<<Qt::endl;
         return true;
     }
     else{
@@ -374,7 +375,7 @@ void InferenceKernel::setAtomsToCheckFromAntecedentsIfAbleMT(int entry)
 
 void InferenceKernel::logOnlyForFunctions(const char* funcName)
 {
-    qDebug()<<funcName<<endl;;
+    qDebug()<<funcName<<Qt::endl;;
 }
 
 void InferenceKernel::AppendAtomEntriesToConclusionBasedInConclusionandRelevantAtomsContainment()
@@ -550,7 +551,7 @@ void InferenceKernel::inferCurrentRule(int conclusionFound, int currentRuleEntry
         else if(isAbleModusTollens(currentRuleEntry))
             inferConsequents(currentRuleEntry);
 
-        qDebug()<<"The rule is not able to be calculated by MP or MT"<<endl;
+        qDebug()<<"The rule is not able to be calculated by MP or MT"<<Qt::endl;
         conclusionFound=areVerifiedNewConclusions(currentRuleEntry);
     }
 }
@@ -564,7 +565,7 @@ void InferenceKernel::iterateRules(const QVector<int> &rules, int conclusionFoun
         inferCurrentRule(conclusionFound, currentRuleEntry);
 
         if(!conclusionFound){
-            qDebug()<<"Conclusion was found in ForwardChainning"<<endl;
+            qDebug()<<"Conclusion was found in ForwardChainning"<<Qt::endl;
             break;
         }
     }
@@ -574,13 +575,13 @@ void InferenceKernel::iterateRules(const QVector<int> &rules, int conclusionFoun
 
 void InferenceKernel::continueInferenceProcess()
 {
-    qDebug()<<"Not Conclusion found already"<<endl;
+    qDebug()<<"Not Conclusion found already"<<Qt::endl;
     m_bContinueInferenceProcess=true;
 }
 
 void InferenceKernel::stopByKnowledgeExhausted()
 {
-    qDebug()<<"There is no more rules to infer, The knowledge is exhausted"<<endl;
+    qDebug()<<"There is no more rules to infer, The knowledge is exhausted"<<Qt::endl;
     m_bContinueInferenceProcess=false;
     emit knowledgeExhausted();
 }
@@ -656,13 +657,13 @@ void InferenceKernel::forwardChainning(const QVector<int> &rules){
 
         //Si se ha seleccionado en una conclusion, entonces pausamos la inferencia.
         if(!conclusionFound){
-            qDebug()<<"Not Conclusion Found  already"<<endl;
+            qDebug()<<"Not Conclusion Found  already"<<Qt::endl;
             m_bContinueInferenceProcess=true;
             return;
         }
 
         if(m_pWS->m_vInferredRules.size()==l_oldInferedRules.size() ){
-         qDebug()<<"There is no more rules to infer, The knowledge is exhausted"<<endl;
+         qDebug()<<"There is no more rules to infer, The knowledge is exhausted"<<Qt::endl;
          m_bContinueInferenceProcess=false;
          emit knowledgeExhausted();
          return;
@@ -706,8 +707,11 @@ void InferenceKernel::backwardChainning(QSet<int> k)
         for(unsigned int i=0; i<m_pWS->m_vRules.size();++i){
             int currentRule=m_pWS->m_vRules.at(i);
 
-            QSet<int> tempCqs=m_pWS->m_mmConsequents.values(currentRule).toSet();
-            QSet<int> tempAnt=m_pWS->m_mmAntecedents.values(currentRule).toSet();
+            QList<int> values = m_pWS->m_mmConsequents.values(currentRule);
+            QSet<int> tempCqs(values.begin(), values.end());
+
+            QList<int> values2 = m_pWS->m_mmAntecedents.values(currentRule);
+            QSet<int> tempAnt(values2.begin(), values2.end());
 
             if(tempCqs.intersect(k).size() != 0 &&
                     isAbleModusPonens(currentRule)){
@@ -722,12 +726,11 @@ void InferenceKernel::backwardChainning(QSet<int> k)
         }
     }while(CRDI.size() != oldCRDI.size());
 
-    QList<int> resBW=CRDI.toList();
-    qSort(resBW);
+    QList<int> resBW(CRDI.begin(), CRDI.end());
+    std::sort(resBW.begin(), resBW.end());
 
     forwardChainning(resBW.toVector());
 }
-
 
 InferenceKernel::~InferenceKernel(){
     delete m_pWS;

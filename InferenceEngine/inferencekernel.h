@@ -63,8 +63,8 @@ public:
     QVector<PROPNode>  getTree() const {return m_pTB->getTree();}
     QVector<QString> getSymbols()const {return m_pTB->getSymbols();}
     QVector<int> getRules()const{return m_pWS->m_vRules;}
-    QMap<int,int> getAntecedents()const{return m_pWS->m_mmAntecedents;}
-    QMap<int,int> getConsequents()const{return m_pWS->m_mmConsequents;}
+    auto getAntecedents()const{return m_pWS->m_mmAntecedents;}
+    auto getConsequents()const{return m_pWS->m_mmConsequents;}
     QMap<int,QString> getMapEntrySymbol()const{return m_pTB->getMapEntrySymbol();}
     QMap<QString,int> getMapSymbolEntry()const{return m_pTB->getMapSymbolEntry();}
     InferenceKernel(PROPTreeBuilder* tb);
