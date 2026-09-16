@@ -55,7 +55,7 @@ bool RPNSyntaxAnalyzer::Compile()const{
         return true;
     else if(l_nSignal == 4 && l_builderStack.size() != 1)
         l_nSignal=5;
-    qDebug()<<l_signalTable[l_nSignal]<<endl;
+    qDebug()<<l_signalTable[l_nSignal];
     return false;
 }
 

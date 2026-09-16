@@ -6,8 +6,7 @@ CONFIG += staticlib
 #CONFIG -= app_bundle
 #CONFIG += qt
 
-SOURCES += main.cpp \
-    propnode.cpp \
+SOURCES += propnode.cpp \
     proptreebuilder.cpp \
     proplexanalyzer.cpp \
     rpnsyntaxanalyzer.cpp \

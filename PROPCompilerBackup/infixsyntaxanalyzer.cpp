@@ -203,6 +203,6 @@ bool InfixSyntaxAnalyzer::Compile()const{
                                      "Over semi colons characters"};
 
     qDebug()<<l_signalArray[l_signal]<<"1. The error was found in row: "<<l_nErrorRow+1<<"\t Column:"<<
-              l_nErrorCol<<endl;
+              l_nErrorCol;
     return false;
 }

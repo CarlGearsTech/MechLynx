@@ -7,18 +7,21 @@ PROPLexAnalyzer::PROPLexAnalyzer():m_nLastPos(0)
     m_inputs.clear();
 }
 
-PROPLexAnalyzer::LEXEM PROPLexAnalyzer::buildToken(LEXEM::Type type, QString token){
+PROPLexAnalyzer::LEXEM PROPLexAnalyzer::buildToken(LEXEM::Type type, QString token)
+{
     PROPLexAnalyzer::LEXEM l;
     l.m_type=type;
     l.m_sToken=token;
     return l;
 }
 
-bool PROPLexAnalyzer::pushFile(QString fileName){
-    QFile* file=new QFile(fileName);
+bool PROPLexAnalyzer::pushFile(const QString& fileName)
+{
+    QFile* file = new QFile(fileName);
     if(!file->exists())
         qDebug()<<"File does not exits";
-    if(file->open(QFile::ReadOnly | QFile::Text)){
+    if(file->open(QFile::ReadOnly | QFile::Text))
+    {
         m_inputs.push(file);
         return true;
     }

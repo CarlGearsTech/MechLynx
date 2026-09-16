@@ -14,25 +14,23 @@ protected:
     QStack<QChar> m_pendingChars;
     QTextStream m_Stream;
     int m_nLastPos;
-
 public:
-    //Embedded struct to give lexical meaning to words from a file, and be useful
-    //to the tree structure.
-    struct LEXEM{
+    /* Embedded struct to give lexical meaning to words from a file,
+     * and be useful to the tree structure.*/
+    struct LEXEM
+    {
         enum Type{OPERATOR,ID,ENDOFF,ERROR,OPENBRACKET,CLOSEDBRAKET,EOL,COMMENT};
         Type m_type;
         QString m_sToken;
         int m_ntreeIndex;
     };
-
     LEXEM buildToken(LEXEM::Type,QString token);
-    bool pushFile(QString fileName);
+    bool pushFile(const QString &fileName);
     void popFile();
     QString read();
     LEXEM getToken();
 
     PROPLexAnalyzer();
-    ~PROPLexAnalyzer(){}
 };
 
 #endif // PROPLEXANALYZER_H

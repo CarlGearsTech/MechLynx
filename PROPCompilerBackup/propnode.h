@@ -8,9 +8,7 @@ public:
     PROPNode(NodeType type, int first, int second);
     int first()const{return m_nFirst;}
     int second()const{return m_nSecond;}
-    PROPNode();
     NodeType getType()const{return m_nodeType;}
-
     ~PROPNode();
 private:
     NodeType m_nodeType;
