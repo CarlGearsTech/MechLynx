@@ -11,7 +11,7 @@ TEMPLATE = lib
 CONFIG += c++20
 CONFIG += staticlib
 CONFIG -= app_bundle
-
+DEFINES += INFERENCEENGINE_STATIC
 DEFINES += INFERENCEENGINE_LIBRARY
 DEFINES += QT_DEPRECATED_WARNINGS
 
@@ -23,7 +23,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     inferencekernel.cpp \
     workspace.cpp \
-    main.cpp
 
 
 #-------------------------------------------------

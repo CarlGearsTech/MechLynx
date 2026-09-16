@@ -28,12 +28,17 @@ void Workspace::reset(){
     m_mRelevantAtoms.clear();
 }
 
-void Workspace::resetRules(){
+void Workspace::resetRules()
+{
     m_vRules.clear();
+    const auto treeLocal = m_pTB->getTree();
 
-    for(unsigned int i=0;i<m_pTB->getTree().size();++i)
-        if(m_pTB->getTree().at(i).getType()==PROPNode::NodeType::IF)
+    for(qsizetype i=0; i<treeLocal.size(); ++i)
+    {
+        const auto& node = treeLocal.at(i);
+        if(node.getType() == PROPNode::NodeType::IF)
             m_vRules.append(i);
+    }
 }
 
 void Workspace::resetAntecedentsAndConsequents(){
@@ -72,9 +77,13 @@ void Workspace::pickAtom(int entry, int rule, bool isConsequent){
         InsertAntecedentOrConsequent(rule,first,isConsequent);
 
     //Right part
+    if(m_pTB->getTree().at(entry).second() < 0)
+        return;
     int second=m_pTB->getTree().at(entry).second();
-    if(second != 1){
-        if(m_pTB->getTree().at(second).getType() != PROPNode::NodeType::ATOM){
+    if(second != 1)
+    {
+        if(m_pTB->getTree().at(second).getType() != PROPNode::NodeType::ATOM)
+        {
             if(!isConsequent)
                 pickAtom(second,rule,0);
             else

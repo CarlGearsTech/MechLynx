@@ -21,7 +21,7 @@ int main(int argc,char* argv[]){
     InfixSyntaxAnalyzer IASA(&LA,&TB);
     InferenceKernel IK(&TB);
 
-    if(LA.pushFile("/home/quique/Documents/Qt17/InferenceEngine/Resources/KnowledgeBase")){
+    if(LA.pushFile(":/SEResources/KnowledgeBase")){
         bool cpRes=IASA.Compile();
         if(cpRes){
             out<<"Success in compilation"<<Qt::endl;

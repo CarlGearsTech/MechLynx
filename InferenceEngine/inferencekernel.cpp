@@ -67,8 +67,12 @@ bool InferenceKernel::setValue2Atom(int entry, bool value){
     return false;
 }
 
-void InferenceKernel::propagate(int entry, bool value){
-    PROPNode Node=m_pTB->getTree().at(entry);
+void InferenceKernel::propagate(int entry, bool value)
+{
+    if(entry < 0)
+        return;
+    const auto tree = m_pTB->getTree();
+    PROPNode Node=tree.at(entry);
 
     switch(Node.getType()){
     case PROPNode::AND:
@@ -93,8 +97,10 @@ void InferenceKernel::propagate(int entry, bool value){
     }
 }
 
-void InferenceKernel::infer(int entry){
-    PROPNode Node=m_pTB->getTree().at(entry);
+void InferenceKernel::infer(int entry)
+{
+    const auto tree = m_pTB->getTree();
+    PROPNode Node= tree.at(entry);
     bool isMT=false;
 
     //Modus Tollens
@@ -106,7 +112,6 @@ void InferenceKernel::infer(int entry){
     //Modus Ponens
     if(m_pWS->m_mAntecedentsValue.contains(entry))
         m_pWS->m_mConsequentsValue.insert(entry,1);
-
     (isMT)?propagate(Node.first(),0):propagate(Node.second(),1);
 }
 
