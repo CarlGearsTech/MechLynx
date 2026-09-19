@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Qt-MinGW-C++20",
+            "compilerPath": "C:/Qt/Tools/mingw1310_64/bin/g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "windows-gcc-x64",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Qt/6.11.1/mingw_64/include",
+                "C:/Qt/6.11.1/mingw_64/include/QtCore",
+                "C:/Qt/6.11.1/mingw_64/include/QtGui",
+                "C:/Qt/6.11.1/mingw_64/include/QtWidgets"
+            ],
+            "defines": [
+                "QT_CORE_LIB",
+                "QT_GUI_LIB",
+                "QT_WIDGETS_LIB",
+                "INFERENCEENGINE_STATIC"
+            ]
+        }
+    ],
+    "version": 4
+}

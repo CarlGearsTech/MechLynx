@@ -1,12 +1,21 @@
-#TEMPLATE = app
-TEMPLATE = lib
-CONFIG += staticlib
-#CONFIG += c++11
-#CONFIG += console c++11
-#CONFIG -= app_bundle
-#CONFIG += qt
+#-------------------------------------------------
+#
+# PROPCompilerBackup
+#
+#-------------------------------------------------
 
-SOURCES += propnode.cpp \
+QT += core gui
+
+TARGET = PROPCompilerBackup
+TEMPLATE = lib
+
+CONFIG += staticlib
+CONFIG += c++20
+
+DEFINES += QT_DEPRECATED_WARNINGS
+
+SOURCES += \
+    propnode.cpp \
     proptreebuilder.cpp \
     proplexanalyzer.cpp \
     rpnsyntaxanalyzer.cpp \
@@ -20,11 +29,6 @@ HEADERS += \
     propsyntaxanalyzer.h \
     rpnsyntaxanalyzer.h \
     infixsyntaxanalyzer.h
-
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
 
 RESOURCES += \
     resources.qrc

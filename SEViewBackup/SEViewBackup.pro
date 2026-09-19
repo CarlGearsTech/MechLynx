@@ -11,13 +11,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SEViewBackup
 TEMPLATE = app
 
+CONFIG += c++20
+
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += INFERENCEENGINE_STATIC
-
-
-#-------------------------------------------------
-# Sources
-#-------------------------------------------------
 
 SOURCES += \
     main.cpp \
@@ -26,39 +23,25 @@ SOURCES += \
     coverWidget.cpp \
     conclusionsWidget.cpp
 
-
-#-------------------------------------------------
-# Headers
-#-------------------------------------------------
-
 HEADERS += \
     seview.h \
     conclusionsWidget.h \
     coverWidget.h \
     subjectWidget.h
 
-
-#-------------------------------------------------
-# Forms
-#-------------------------------------------------
-
 FORMS += \
     seview.ui
-
-
-#-------------------------------------------------
-# Resources
-#-------------------------------------------------
 
 RESOURCES += \
     seresources.qrc
 
 
 #-------------------------------------------------
-# Project paths
+# Project directories
 #-------------------------------------------------
 
-PROJECT_ROOT = $$clean_path($$PWD/..)
+PROJECT_ROOT = \
+    $$clean_path($$PWD/..)
 
 INFERENCE_ENGINE_DIR = \
     $$clean_path($$PROJECT_ROOT/InferenceEngine)
@@ -66,11 +49,32 @@ INFERENCE_ENGINE_DIR = \
 PROP_COMPILER_DIR = \
     $$clean_path($$PROJECT_ROOT/PROPCompilerBackup)
 
+
+#-------------------------------------------------
+# Build directory
+#
+# Release -> build-vscode
+# Debug   -> build-vscode-debug
+#-------------------------------------------------
+
+CONFIG(debug, debug|release) {
+    BUILD_ROOT = \
+        $$clean_path($$PROJECT_ROOT/build-vscode-debug)
+} else {
+    BUILD_ROOT = \
+        $$clean_path($$PROJECT_ROOT/build-vscode)
+}
+
+
+#-------------------------------------------------
+# Dependency build directories
+#-------------------------------------------------
+
 INFERENCE_ENGINE_BUILD = \
-    $$clean_path($$INFERENCE_ENGINE_DIR/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug)
+    $$clean_path($$BUILD_ROOT/InferenceEngine)
 
 PROP_COMPILER_BUILD = \
-    $$clean_path($$PROP_COMPILER_DIR/build/Desktop_Qt_6_11_1_MinGW_64_bit-Debug)
+    $$clean_path($$BUILD_ROOT/PROPCompilerBackup)
 
 
 #-------------------------------------------------
@@ -83,7 +87,7 @@ INCLUDEPATH += \
 
 
 #-------------------------------------------------
-# Debug
+# Link InferenceEngine + PROPCompilerBackup
 #-------------------------------------------------
 
 win32-g++:CONFIG(debug, debug|release) {
@@ -102,11 +106,6 @@ win32-g++:CONFIG(debug, debug|release) {
     PRE_TARGETDEPS += \
         $$PROP_COMPILER_BUILD/debug/libPROPCompilerBackup.a
 }
-
-
-#-------------------------------------------------
-# Release
-#-------------------------------------------------
 
 win32-g++:CONFIG(release, debug|release) {
 

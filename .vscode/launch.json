@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug SEViewBackup",
+            "type": "cppdbg",
+            "request": "launch",
+
+            "program": "${workspaceFolder}/build-vscode-debug/SEViewBackup/debug/SEViewBackup.exe",
+
+            "args": [],
+
+            "stopAtEntry": false,
+
+            "cwd": "${workspaceFolder}/build-vscode-debug/SEViewBackup/debug",
+
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "C:\\Qt\\6.11.1\\mingw_64\\bin;C:\\Qt\\Tools\\mingw1310_64\\bin;${env:PATH}"
+                }
+            ],
+
+            "externalConsole": false,
+
+            "MIMode": "gdb",
+
+            "miDebuggerPath": "C:\\Qt\\Tools\\mingw1310_64\\bin\\gdb.exe",
+
+            "setupCommands": [
+                {
+                    "description": "Enable GDB pretty printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+
+            "preLaunchTask": "Build MechLynx - Debug"
+        }
+    ]
+}

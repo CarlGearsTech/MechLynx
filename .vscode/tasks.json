@@ -1,0 +1,52 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build MechLynx - Release",
+            "type": "shell",
+            "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\mingw32-make.exe",
+            "options": {
+                "cwd": "${workspaceFolder}/build-vscode"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Build MechLynx - Debug",
+            "type": "shell",
+            "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\mingw32-make.exe",
+            "options": {
+                "cwd": "${workspaceFolder}/build-vscode-debug"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Clean MechLynx - Release",
+            "type": "shell",
+            "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\mingw32-make.exe",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build-vscode"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Rebuild MechLynx - Release",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean MechLynx - Release",
+                "Build MechLynx - Release"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
