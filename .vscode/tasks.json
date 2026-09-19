@@ -6,7 +6,10 @@
             "type": "shell",
             "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\mingw32-make.exe",
             "options": {
-                "cwd": "${workspaceFolder}/build-vscode"
+                "cwd": "${workspaceFolder}/build-vscode",
+                "env": {
+                    "PATH": "C:\\Qt\\Tools\\mingw1310_64\\bin;C:\\Qt\\6.11.1\\mingw_64\\bin;${env:PATH}"
+                }
             },
             "group": {
                 "kind": "build",
@@ -21,7 +24,10 @@
             "type": "shell",
             "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\mingw32-make.exe",
             "options": {
-                "cwd": "${workspaceFolder}/build-vscode-debug"
+                "cwd": "${workspaceFolder}/build-vscode-debug",
+                "env": {
+                    "PATH": "C:\\Qt\\Tools\\mingw1310_64\\bin;C:\\Qt\\6.11.1\\mingw_64\\bin;${env:PATH}"
+                }
             },
             "problemMatcher": [
                 "$gcc"
@@ -35,7 +41,25 @@
                 "clean"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/build-vscode"
+                "cwd": "${workspaceFolder}/build-vscode",
+                "env": {
+                    "PATH": "C:\\Qt\\Tools\\mingw1310_64\\bin;C:\\Qt\\6.11.1\\mingw_64\\bin;${env:PATH}"
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean MechLynx - Debug",
+            "type": "shell",
+            "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\mingw32-make.exe",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build-vscode-debug",
+                "env": {
+                    "PATH": "C:\\Qt\\Tools\\mingw1310_64\\bin;C:\\Qt\\6.11.1\\mingw_64\\bin;${env:PATH}"
+                }
             },
             "problemMatcher": []
         },
@@ -45,6 +69,15 @@
             "dependsOn": [
                 "Clean MechLynx - Release",
                 "Build MechLynx - Release"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Rebuild MechLynx - Debug",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean MechLynx - Debug",
+                "Build MechLynx - Debug"
             ],
             "problemMatcher": []
         }
