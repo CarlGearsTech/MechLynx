@@ -12,16 +12,27 @@ PROPNode PROPTreeBuilder::getNodeAt(qsizetype  idx)const
     return _treeLst.at(idx);
 }
 
-int PROPTreeBuilder::atom(QString strId){
-    QMap<QString,int>::const_iterator it=_mapSymbol2Entry.find(strId);
+QString PROPTreeBuilder::getSymbolAt(qsizetype idx)const
+{
+    /* Out of boundaries is checked by Qt.*/
+    return _symblLst.at(idx);
+}
 
+/**
+ * @brief Inserts an atom if it does not already exist in the tree.
+ * @return The newly created node from the list.
+ * @note The node also updates the maps and symbol list.
+ */
+int PROPTreeBuilder::atom(QString strId)
+{
+    const auto it = _mapSymbol2Entry.find(strId);
     if(it != _mapSymbol2Entry.end())
         return it.value();
-
-    else{
+    else
+    {
         _mapSymbol2Entry.insert(strId,_treeLst.size());
         _mapEntry2Symbol.insert(_treeLst.size(),strId);
-        _treeLst.append(PROPNode(PROPNode::ATOM,_symblLst.size(),-1));
+        _treeLst.append(PROPNode::make_atom(_symblLst.size()));
         _symblLst.push_back(strId);
         return _treeLst.size()-1;
     }

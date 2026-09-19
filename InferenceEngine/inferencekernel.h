@@ -60,8 +60,8 @@ public:
     bool doesConclusionExists(int index);
     QList<int> getConclusionsByValueKeys()const{return m_pWS->m_mConclusionValues.keys();}
     QVector<int> getConclusions() const{return m_pWS->m_vConclusions;}
-    PROPNode  getNodeAt(qsizetype idx) const {return m_pTB->getNodeAt(idx);}
-    QVector<QString> getSymbols()const {return m_pTB->getSymbols();}
+    PROPNode getNodeAt(qsizetype idx)const {return m_pTB->getNodeAt(idx);}
+    QString getSymbolAt(qsizetype idx)const {return m_pTB->getSymbolAt(idx);}
     QVector<int> getRules()const{return m_pWS->m_vRules;}
     auto getAntecedents()const{return m_pWS->m_mmAntecedents;}
     auto getConsequents()const{return m_pWS->m_mmConsequents;}

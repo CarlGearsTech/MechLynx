@@ -15,7 +15,7 @@ bool InferenceKernel::askForValue(int entry){
     QTextStream out(stdout);
     QTextStream in(stdin);
     QString selection;
-    QString symbol= m_pTB->getSymbols().at(m_pTB->getNodeAt(entry).getFirst());
+    QString symbol= m_pTB->getSymbolAt(m_pTB->getNodeAt(entry).getFirst());
 
     if(m_pWS->m_vAskedAtoms.contains(entry)){
         qDebug()<<"These atoms are asked already"<<symbol<<Qt::endl;
@@ -51,7 +51,7 @@ bool InferenceKernel::setValue2Atom(int entry, bool value){
         qDebug()<<"The atom doesn't exist in the tree"<<Qt::endl;
         return false;
     }
-    QString relAtom= m_pTB->getSymbols().at(m_pTB->getNodeAt(entry).getFirst());
+    QString relAtom= m_pTB->getSymbolAt(m_pTB->getNodeAt(entry).getFirst());
 
     if(!m_pWS->m_mRelevantAtoms.contains(entry)){
         m_pWS->m_mRelevantAtoms.insert(entry,value);

@@ -18,6 +18,10 @@
 class PROPNode
 {
 public:
+    static PROPNode make_atom(int first)
+    {
+        return PROPNode(ATOM, first, -1);
+    }
     enum NodeType{ATOM,NOT,IF,IFF,AND,OR,TRUE};
     PROPNode(NodeType type, int first, int second): _nodeType(type),_nFirst(first),_nSecond(second){}
     [[nodiscard]] int getFirst()const{return _nFirst;}

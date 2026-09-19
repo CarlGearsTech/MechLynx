@@ -22,11 +22,11 @@ public:
     int Iff(int first,int second);
     int Or(int first,int second);
     int True();
-    QVector<QString> getSymbols()const{return this->_symblLst;}
-    PROPNode getNodeAt(qsizetype  idx)const;
-    qsizetype getTreeSize()const { return _treeLst.size();}
-    QMap<int,QString> getMapEntrySymbol()const{return _mapEntry2Symbol;}
-    QMap<QString,int> getMapSymbolEntry()const{return _mapSymbol2Entry;}
+    [[nodiscard]] QString getSymbolAt(qsizetype idx )const;
+    [[nodiscard]] PROPNode getNodeAt(qsizetype  idx)const;
+    [[nodiscard]] qsizetype getTreeSize()const { return _treeLst.size();}
+    [[nodiscard]] QMap<int,QString> getMapEntrySymbol()const{return _mapEntry2Symbol;}
+    [[nodiscard]] QMap<QString,int> getMapSymbolEntry()const{return _mapSymbol2Entry;}
     int valueAtomBySymbol(QString symbol);
 };
 #endif // PROPTREEBUILDER_H
