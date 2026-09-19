@@ -31,11 +31,9 @@ void Workspace::reset(){
 void Workspace::resetRules()
 {
     m_vRules.clear();
-    const auto treeLocal = m_pTB->getTree();
-
-    for(qsizetype i=0; i<treeLocal.size(); ++i)
+    for(qsizetype i=0; i < m_pTB->getTreeSize() ; ++i)
     {
-        const auto& node = treeLocal.at(i);
+        const auto& node = m_pTB->getNodeAt(i);
         if(node.getType() == PROPNode::NodeType::IF)
             m_vRules.append(i);
     }
@@ -46,10 +44,10 @@ void Workspace::resetAntecedentsAndConsequents(){
     m_mConsequentsValue.clear();
 
     for(int i=0, lentry=0,rentry=0;i<m_vRules.size();++i){
-        lentry=m_pTB->getTree().at(m_vRules.at(i)).getFirst();
+        lentry=m_pTB->getNodeAt(m_vRules.at(i)).getFirst();
         pickAtom(lentry,m_vRules.at(i),0);
 
-        rentry=m_pTB->getTree().at(m_vRules.at(i)).getSecond();
+        rentry=m_pTB->getNodeAt(m_vRules.at(i)).getSecond();
         pickAtom(rentry,m_vRules.at(i),1);
     }
 }
@@ -57,16 +55,16 @@ void Workspace::resetAntecedentsAndConsequents(){
 void Workspace::pickAtom(int entry, int rule, bool isConsequent){
     //Reach a atom type
     //Check operationst
-    if(m_pTB->getTree().at(entry).getType() == PROPNode::NodeType::ATOM){
+    if(m_pTB->getNodeAt(entry).getType() == PROPNode::NodeType::ATOM){
         InsertAntecedentOrConsequent(rule,entry,isConsequent);
         return;
     }
 
     //Operation type and verify its first and second
     //Check left part of the operation
-    int first=m_pTB->getTree().at(entry).getFirst();
+    int first=m_pTB->getNodeAt(entry).getFirst();
     //Operation Type
-    if(m_pTB->getTree().at(first).getType() != PROPNode::NodeType::ATOM){
+    if(m_pTB->getNodeAt(first).getType() != PROPNode::NodeType::ATOM){
         if(!isConsequent)
             pickAtom(first,rule,0);
         else
@@ -77,12 +75,12 @@ void Workspace::pickAtom(int entry, int rule, bool isConsequent){
         InsertAntecedentOrConsequent(rule,first,isConsequent);
 
     //Right part
-    if(m_pTB->getTree().at(entry).getSecond() < 0)
+    if(m_pTB->getNodeAt(entry).getSecond() < 0)
         return;
-    int second=m_pTB->getTree().at(entry).getSecond();
+    int second=m_pTB->getNodeAt(entry).getSecond();
     if(second != 1)
     {
-        if(m_pTB->getTree().at(second).getType() != PROPNode::NodeType::ATOM)
+        if(m_pTB->getNodeAt(second).getType() != PROPNode::NodeType::ATOM)
         {
             if(!isConsequent)
                 pickAtom(second,rule,0);
@@ -107,7 +105,7 @@ void Workspace::resetConclusions(){
 }
 
 void Workspace::resetDeniedAtoms(){
-    for(unsigned int i=0U; i<m_pTB->getTree().size();++i)
-        if(m_pTB->getTree().at(i).getType() == PROPNode::NodeType::NOT)
-            m_vDeniedAtoms.append(m_pTB->getTree().at(i).getFirst());
+    for(qsizetype i=0; i<m_pTB->getTreeSize();++i)
+        if(m_pTB->getNodeAt(i).getType() == PROPNode::NodeType::NOT)
+            m_vDeniedAtoms.append(m_pTB->getNodeAt(i).getFirst());
 }

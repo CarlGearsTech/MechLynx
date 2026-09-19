@@ -15,7 +15,7 @@ bool InferenceKernel::askForValue(int entry){
     QTextStream out(stdout);
     QTextStream in(stdin);
     QString selection;
-    QString symbol= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).getFirst());
+    QString symbol= m_pTB->getSymbols().at(m_pTB->getNodeAt(entry).getFirst());
 
     if(m_pWS->m_vAskedAtoms.contains(entry)){
         qDebug()<<"These atoms are asked already"<<symbol<<Qt::endl;
@@ -51,7 +51,7 @@ bool InferenceKernel::setValue2Atom(int entry, bool value){
         qDebug()<<"The atom doesn't exist in the tree"<<Qt::endl;
         return false;
     }
-    QString relAtom= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).getFirst());
+    QString relAtom= m_pTB->getSymbols().at(m_pTB->getNodeAt(entry).getFirst());
 
     if(!m_pWS->m_mRelevantAtoms.contains(entry)){
         m_pWS->m_mRelevantAtoms.insert(entry,value);
@@ -71,8 +71,7 @@ void InferenceKernel::propagate(int entry, bool value)
 {
     if(entry < 0)
         return;
-    const auto tree = m_pTB->getTree();
-    PROPNode Node=tree.at(entry);
+    PROPNode Node = m_pTB->getNodeAt(entry);
 
     switch(Node.getType()){
     case PROPNode::AND:
@@ -99,8 +98,7 @@ void InferenceKernel::propagate(int entry, bool value)
 
 void InferenceKernel::infer(int entry)
 {
-    const auto tree = m_pTB->getTree();
-    PROPNode Node= tree.at(entry);
+    const PROPNode Node = m_pTB->getNodeAt(entry);
     bool isMT=false;
 
     //Modus Tollens
@@ -116,7 +114,7 @@ void InferenceKernel::infer(int entry)
 }
 
 int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
-    PROPNode Node=m_pTB->getTree().at(entry);
+    const PROPNode Node=m_pTB->getNodeAt(entry);
 
 
     if(Node.getType()== PROPNode::ATOM){
@@ -205,7 +203,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
 
 //a1&a2&a3&a4
 bool InferenceKernel::isCube(int entry){
-    PROPNode node=m_pTB->getTree().at(entry);
+    const PROPNode node=m_pTB->getNodeAt(entry);
 
     int first;
     int second;
@@ -247,7 +245,7 @@ bool InferenceKernel::isCube(int entry){
 
 //a1||a2||a3||a4||a5
 bool InferenceKernel::isClousure(int entry){
-    PROPNode node=m_pTB->getTree().at(entry);
+    const PROPNode node=m_pTB->getNodeAt(entry);
 
     int first;
     int second;
@@ -294,7 +292,7 @@ void promptError(int error){
 bool InferenceKernel::isAbleModusPonens(int entry){
     logOnlyForFunctions(Q_FUNC_INFO);
 
-    PROPNode Node=m_pTB->getTree().at(entry);
+    const PROPNode Node=m_pTB->getNodeAt(entry);
 
     bool first;
     bool second;
@@ -319,7 +317,7 @@ bool InferenceKernel::isAbleModusPonens(int entry){
 bool InferenceKernel::isAbleModusTollens(int entry){
     logOnlyForFunctions(Q_FUNC_INFO);
 
-    PROPNode Node=m_pTB->getTree().at(entry);
+    const PROPNode Node=m_pTB->getNodeAt(entry);
 
     bool first;
     bool second;
