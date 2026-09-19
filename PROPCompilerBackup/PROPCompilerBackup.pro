@@ -29,6 +29,3 @@ HEADERS += \
     propsyntaxanalyzer.h \
     rpnsyntaxanalyzer.h \
     infixsyntaxanalyzer.h
-
-RESOURCES += \
-    resources.qrc

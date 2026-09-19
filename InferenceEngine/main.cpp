@@ -3,11 +3,10 @@
 
 #include "proptreebuilder.h"
 #include "propnode.h"
-#include "infixsyntaxanalizer.h"
 #include "proplexanalyzer.h"
 #include "workspace.h"
 #include "inferencekernel.h"
-
+#include "infixsyntaxanalyzer.h"
 #include <iostream>
 #include <QTextStream>
 

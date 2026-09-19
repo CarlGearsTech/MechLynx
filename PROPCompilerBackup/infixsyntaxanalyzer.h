@@ -1,5 +1,5 @@
-#ifndef INFIXSYNTAXANALIZER_H
-#define INFIXSYNTAXANALIZER_H
+#ifndef INFIXSYNTAXANALYZER_H
+#define INFIXSYNTAXANALYZER_H
 #include "propsyntaxanalyzer.h"
 
 class InfixSyntaxAnalyzer: public PROPSyntaxAnalyzer{
@@ -15,6 +15,4 @@ public:
     bool Compile()const;
 
 };
-
-
-#endif // INFIXSYNTAXANALIZER_H
+#endif // INFIXSYNTAXANALYZER_H

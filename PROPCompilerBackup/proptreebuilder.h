@@ -13,7 +13,6 @@ private:
     QVector<QString> m_lstSymbol;
     QMap<QString,int> m_mapSymbol2Entry;
     QMap<int,QString> m_mapEntry2Symbol;
-
 public:
     PROPTreeBuilder();
     int atom(QString string);

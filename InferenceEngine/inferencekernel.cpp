@@ -15,7 +15,7 @@ bool InferenceKernel::askForValue(int entry){
     QTextStream out(stdout);
     QTextStream in(stdin);
     QString selection;
-    QString symbol= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).first());
+    QString symbol= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).getFirst());
 
     if(m_pWS->m_vAskedAtoms.contains(entry)){
         qDebug()<<"These atoms are asked already"<<symbol<<Qt::endl;
@@ -51,7 +51,7 @@ bool InferenceKernel::setValue2Atom(int entry, bool value){
         qDebug()<<"The atom doesn't exist in the tree"<<Qt::endl;
         return false;
     }
-    QString relAtom= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).first());
+    QString relAtom= m_pTB->getSymbols().at(m_pTB->getTree().at(entry).getFirst());
 
     if(!m_pWS->m_mRelevantAtoms.contains(entry)){
         m_pWS->m_mRelevantAtoms.insert(entry,value);
@@ -79,14 +79,14 @@ void InferenceKernel::propagate(int entry, bool value)
     case PROPNode::OR:
     case PROPNode::IF:
     case PROPNode::IFF:
-        propagate(Node.first(),value);
-        propagate(Node.second(),value);
+        propagate(Node.getFirst(),value);
+        propagate(Node.getSecond(),value);
         break;
 
     case PROPNode::NOT:
         if(value==1)
             value=0;
-        propagate(Node.first(),value);
+        propagate(Node.getFirst(),value);
         break;
 
     case PROPNode::ATOM:
@@ -112,7 +112,7 @@ void InferenceKernel::infer(int entry)
     //Modus Ponens
     if(m_pWS->m_mAntecedentsValue.contains(entry))
         m_pWS->m_mConsequentsValue.insert(entry,1);
-    (isMT)?propagate(Node.first(),0):propagate(Node.second(),1);
+    (isMT)?propagate(Node.getFirst(),0):propagate(Node.getSecond(),1);
 }
 
 int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
@@ -126,11 +126,11 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
             return -1;
     }
 
-    int first=eval(Node.first(),ruleType);
+    int first =eval(Node.getFirst(),ruleType);
     int second;
 
     if(Node.getType()!=PROPNode::NOT){
-        second=eval(Node.second(),ruleType);
+        second=eval(Node.getSecond(),ruleType);
     }
 
     switch(Node.getType()){
@@ -212,7 +212,7 @@ bool InferenceKernel::isCube(int entry){
 
     switch(node.getType()){
     case PROPNode::NOT:
-        first=isCube(node.first());
+        first=isCube(node.getFirst());
 
         if(first==1)
             return 1;
@@ -225,8 +225,8 @@ bool InferenceKernel::isCube(int entry){
         break;
 
     case PROPNode::AND:
-        first=isCube(node.first());
-        second=isCube(node.second());
+        first=isCube(node.getFirst());
+        second=isCube(node.getSecond());
 
         if(first==1 && second==1)
             return 1;
@@ -254,7 +254,7 @@ bool InferenceKernel::isClousure(int entry){
 
     switch(node.getType()){
     case PROPNode::NOT:
-        first=isClousure(node.first());
+        first=isClousure(node.getFirst());
         if(first==1)
             return 1;
         else
@@ -266,8 +266,8 @@ bool InferenceKernel::isClousure(int entry){
         break;
 
     case PROPNode::OR:
-        first=isClousure(node.first());
-        second=isClousure(node.second());
+        first=isClousure(node.getFirst());
+        second=isClousure(node.getSecond());
 
         if(first==1 && second==1)
             return 1;
@@ -300,8 +300,8 @@ bool InferenceKernel::isAbleModusPonens(int entry){
     bool second;
 
     if(Node.getType()==PROPNode::IF){
-        first=isCube(Node.first());
-        second=isCube(Node.second());
+        first=isCube(Node.getFirst());
+        second=isCube(Node.getSecond());
 
         if(first==false || second==false)
             return false;
@@ -325,8 +325,8 @@ bool InferenceKernel::isAbleModusTollens(int entry){
     bool second;
 
     if(Node.getType()==PROPNode::IF){
-        first=isCube(Node.first());
-        second=isClousure(Node.second());
+        first=isCube(Node.getFirst());
+        second=isClousure(Node.getSecond());
 
         if(first==false || second==false)
             return false;
