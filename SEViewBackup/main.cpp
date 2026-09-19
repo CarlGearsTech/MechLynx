@@ -8,7 +8,7 @@
 #include "propsyntaxanalyzer.h"
 #include "workspace.h"
 #include "inferencekernel.h"
-#include "infixsyntaxanalizer.h"
+#include "infixsyntaxanalyzer.h"
 
 int main(int argc, char *argv[])
 {

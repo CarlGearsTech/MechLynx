@@ -110,7 +110,7 @@ QSet<int> SEView::getConclusionsByRule(QSet<int> rules)
 }
 
 void SEView::onAtomDisplayed(int atomEntry){
-    int position=inferenceKernel->getTree().at(atomEntry).first();
+    int position=inferenceKernel->getTree().at(atomEntry).getFirst();
     QString symbol=inferenceKernel->getSymbols().at(position);
     symbol.replace("_"," ");
 
@@ -199,7 +199,7 @@ void SEView::onConclusionDisplayed(QList<int> conclusions)
 {
     QStringList conclusionString;
     foreach(int conclusion, conclusions){
-        int position=inferenceKernel->getTree().at(conclusion).first();
+        int position=inferenceKernel->getTree().at(conclusion).getFirst();
         QString symbol=inferenceKernel->getSymbols().at(position);
         QString replaced=symbol.replace("_"," ");
         conclusionString.append(replaced);
@@ -236,7 +236,7 @@ void SEView::onKnowledgeBaseExhausted()
     QStringList stringList;
 
     foreach(int conclusion,inferenceKernel->getConclusionsByValueKeys()){
-        int position=inferenceKernel->getTree().at(conclusion).first();
+        int position=inferenceKernel->getTree().at(conclusion).getFirst();
         QString symbol=inferenceKernel->getSymbols().at(position);
         QString temp=symbol.replace("_"," ");
         stringList.append(temp);
