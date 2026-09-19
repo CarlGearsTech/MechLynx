@@ -64,7 +64,7 @@ SEView::SEView(InferenceKernel *ik, QWidget *parent):
     pages->setCurrentWidget(coverPage);
 
     QVector<int> tempRules=inferenceKernel->getResettedRules();
-    qSort(tempRules);
+    std::sort(tempRules.begin(), tempRules.end());
 
     subjectPage->setRules(tempRules);
     //
@@ -87,7 +87,7 @@ SEView::SEView(InferenceKernel *ik, QWidget *parent):
 
 QSet<int> SEView::getConclusionsByRule(QSet<int> rules)
 {
-    QList<int> temp=rules.toList();
+    QList<int> temp(rules.begin(), rules.end());
     QVector<int> conclusions;
     conclusions.clear();
     QList<int> atomsToCheck;
@@ -106,7 +106,7 @@ QSet<int> SEView::getConclusionsByRule(QSet<int> rules)
         }
         atomsToCheck.clear();
     }
-    return conclusions.toList().toSet();
+    return QSet<int>(conclusions.begin(),conclusions.end());
 }
 
 void SEView::onAtomDisplayed(int atomEntry){
@@ -156,9 +156,11 @@ void SEView::onAskClicked()
     if(pages->currentWidget() == coverPage)
         QMessageBox::about(this,"About Mech Lynx","Copyright 2017");
     else if(pages->currentWidget()==subjectPage)
-        inferenceKernel->backwardChainning(inferenceKernel->
-                                           getConclusions().
-                                           toList().toSet());
+    {
+        QSet<int> k(inferenceKernel->getConclusions().begin(),
+                    inferenceKernel->getConclusions().end());
+        inferenceKernel->backwardChainning(k);
+    }
     else if(pages->currentWidget()==conclusionsPage){
         conclusionsPage->clearItems();
         pages->setCurrentWidget(subjectPage);
@@ -262,8 +264,8 @@ void SEView::onConclusionClicked(QString conclusionString)
     explanation.clear();
 
     QVector<int> rules=inferenceKernel->getRules();
-    QMap<int,int> antecedents=inferenceKernel->getAntecedents();
-    QMap<int,int> consequents=inferenceKernel->getConsequents();
+    auto antecedents=inferenceKernel->getAntecedents();
+    auto consequents=inferenceKernel->getConsequents();
 
     foreach(int rule, rules){
         //Modus Ponens

@@ -33,7 +33,7 @@ public:
 signals:
     void subjectToggled(QSet<int> subjectSet,bool checked);
 public slots:
-    void onButtonToggled(int button, bool checked);
+    void onButtonToggled(QAbstractButton* pButton, bool checked);
 };
 
 

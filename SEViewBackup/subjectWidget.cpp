@@ -13,8 +13,7 @@ QSet<int> SubjectWidget::getRulesRange(unsigned int begin, unsigned int length) 
 
     for(unsigned int i= 0; i<length; ++i)
         subjectRules.append(rulesToBW.at(begin+i));
-
-    return subjectRules.toSet();
+    return QSet<int>(subjectRules.begin(), subjectRules.end());
 }
 
 SubjectWidget::SubjectWidget(QWidget *parent) : QWidget(parent)
@@ -24,17 +23,17 @@ SubjectWidget::SubjectWidget(QWidget *parent) : QWidget(parent)
     setFixedSize(HEIGHT,WIDTH);
 
     motorButton=new QPushButton(QIcon(":/SEResources/motor_icon.png"),
-                                QString(),this);
+                                QString("motorButton"),this);
     transmisionButton=new QPushButton(QIcon(":/SEResources/transmision_icon.png"),
-                                QString(),this);
+                                QString("transmisionButton"),this);
     directionButton=new QPushButton(QIcon(":/SEResources/direccion_icon.png"),
-                                    QString(),this);
+                                    QString("directionButton"),this);
     electricIssuesButton=new QPushButton(QIcon(":/SEResources/electrico_icon.png"),
-                                         QString(),this);
+                                         QString("electricIssuesButton"),this);
     brakesButton=new QPushButton(QIcon(":/SEResources/frenos_icon.png"),
-                                 QString(),this);
+                                 QString("brakesButton"),this);
     suspensionButton=new QPushButton(QIcon(":/SEResources/suspension_icon.png"),
-                                     QString(),this);
+                                     QString("suspensionButton"),this);
 
     motorButton->setMinimumSize(ButtonSize,ButtonSize);
     motorButton->setIconSize(QSize(IconSize,IconSize));
@@ -79,37 +78,36 @@ SubjectWidget::SubjectWidget(QWidget *parent) : QWidget(parent)
     gridLayout->addWidget(transmisionButton,2,1,Qt::AlignCenter);
 
     setLayout(gridLayout);
-    //
-    connect(buttonGroup,SIGNAL(buttonToggled(int,bool)),
-            this,SLOT(onButtonToggled(int,bool)));
+
+    connect(buttonGroup, SIGNAL(buttonToggled(QAbstractButton*,bool)),
+            this, SLOT(onButtonToggled(QAbstractButton*,bool)));
 }
 
-void SubjectWidget::onButtonToggled(int button, bool checked)
+void SubjectWidget::onButtonToggled(QAbstractButton* pButton, bool checked)
 {
     QSet<int> temp;
-
-
-    switch(button){
+    const auto id = buttonGroup->id(pButton);
+    switch(id){
         case 0://Engine
-            temp=getRulesRange(0,95);
+        temp=getRulesRange(0,95);
             break;
         case 1: //Electric issues
-            temp=getRulesRange(103,9);
+        temp=getRulesRange(103,9);
             break;
         case 2: //Brakes
-            temp=getRulesRange(115,16);
+        temp=getRulesRange(115,16);
             break;
         case 3: //Suspension
-            temp=getRulesRange(113,3);
+        temp=getRulesRange(113,3);
             break;
         case 4: // Direction
-            temp=getRulesRange(95,5);
+        temp=getRulesRange(95,5);
             break;
         case 5:
-            temp=getRulesRange(131,16);
+        temp=getRulesRange(131,16);
             break;
         default:
-            qDebug()<<"No supported button was clicked";
+        qDebug()<<"No supported button was clicked";
             break;
     }
     emit subjectToggled(temp,checked);
