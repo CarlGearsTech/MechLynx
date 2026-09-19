@@ -271,14 +271,14 @@ void SEView::onConclusionClicked(QString conclusionString)
         //Modus Ponens
         if(antecedents.values(rule).contains(entryConclusion)){
             foreach(int atomEntry,consequents.values(rule)){
-                explanation+=inferenceKernel->getMapEntrySymbol().value(atomEntry);
-                explanation+=" , ";
+                explanation += inferenceKernel->getSymbolFromEntry(atomEntry);
+                explanation += " , ";
             }
         }
         else if(consequents.values(rule).contains(entryConclusion)){
             foreach(int atomEntry,antecedents.values(rule)){
-                explanation+=inferenceKernel->getMapEntrySymbol().value(atomEntry);
-                explanation+=" , ";
+                explanation += inferenceKernel->getSymbolFromEntry(atomEntry);
+                explanation += " , ";
             }
         }
     }

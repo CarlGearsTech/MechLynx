@@ -25,7 +25,7 @@ public:
     [[nodiscard]] QString getSymbolAt(qsizetype idx )const;
     [[nodiscard]] PROPNode getNodeAt(qsizetype  idx)const;
     [[nodiscard]] qsizetype getTreeSize()const { return _treeLst.size();}
-    [[nodiscard]] QMap<int,QString> getMapEntrySymbol()const{return _mapEntry2Symbol;}
+    [[nodiscard]] QString getSymbolFromEntry(int entry)const { return _mapEntry2Symbol.value(entry);}
     [[nodiscard]] QMap<QString,int> getMapSymbolEntry()const{return _mapSymbol2Entry;}
     int valueAtomBySymbol(QString symbol);
 };

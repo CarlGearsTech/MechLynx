@@ -65,7 +65,7 @@ public:
     QVector<int> getRules()const{return m_pWS->m_vRules;}
     auto getAntecedents()const{return m_pWS->m_mmAntecedents;}
     auto getConsequents()const{return m_pWS->m_mmConsequents;}
-    QMap<int,QString> getMapEntrySymbol()const{return m_pTB->getMapEntrySymbol();}
+    QString getSymbolFromEntry(int entry)const{return m_pTB->getSymbolFromEntry(entry);}
     QMap<QString,int> getMapSymbolEntry()const{return m_pTB->getMapSymbolEntry();}
     InferenceKernel(PROPTreeBuilder* tb);
     ~InferenceKernel();
