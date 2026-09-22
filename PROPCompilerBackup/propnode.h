@@ -1,7 +1,7 @@
 #ifndef PROPNODE_H
 #define PROPNODE_H
 
-enum NodeType{ATOM,NOT,IF,IFF,AND,OR,TRUE, MAX_NODE_TYPE};
+enum NodeType {ATOM,NOT,IF,IFF,AND,OR,TRUE, MAX_NODE_TYPE};
 
 /**
  * @class PROPNode

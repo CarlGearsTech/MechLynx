@@ -66,7 +66,7 @@ public:
     auto getAntecedents()const{return m_pWS->m_mmAntecedents;}
     auto getConsequents()const{return m_pWS->m_mmConsequents;}
     QString getSymbolFromEntry(int entry)const{return m_pTB->getSymbolFromEntry(entry);}
-    QMap<QString,int> getMapSymbolEntry()const{return m_pTB->getMapSymbolEntry();}
+    int getEntryFromSymbol(const QString& str)const{return m_pTB->getEntryFromSymbol(str);}
     InferenceKernel(PROPTreeBuilder* tb);
     ~InferenceKernel();
     bool askForValue(int entry);

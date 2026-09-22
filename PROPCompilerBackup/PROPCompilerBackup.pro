@@ -16,6 +16,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     propnode.cpp \
+    propnodefactory.cpp \
+    proptree.cpp \
     proptreebuilder.cpp \
     proplexanalyzer.cpp \
     rpnsyntaxanalyzer.cpp \
@@ -24,6 +26,8 @@ SOURCES += \
 
 HEADERS += \
     propnode.h \
+    propnodefactory.h \
+    proptree.h \
     proptreebuilder.h \
     proplexanalyzer.h \
     propsyntaxanalyzer.h \

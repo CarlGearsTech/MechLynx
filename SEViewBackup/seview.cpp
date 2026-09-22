@@ -259,7 +259,7 @@ void SEView::onToggledConclusions(QSet<int> subjectConclusion, bool checked)
 
 void SEView::onConclusionClicked(QString conclusionString)
 {
-    int entryConclusion=inferenceKernel->getMapSymbolEntry().value(conclusionString);
+    int entryConclusion=inferenceKernel->getEntryFromSymbol(conclusionString);
     QString explanation;
     explanation.clear();
 
