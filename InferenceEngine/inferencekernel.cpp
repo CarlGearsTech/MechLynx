@@ -74,24 +74,24 @@ void InferenceKernel::propagate(int entry, bool value)
     PROPNode Node = m_pTB->getNodeAt(entry);
 
     switch(Node.getType()){
-    case PROPNode::AND:
-    case PROPNode::OR:
-    case PROPNode::IF:
-    case PROPNode::IFF:
+    case AND:
+    case OR:
+    case IF:
+    case IFF:
         propagate(Node.getFirst(),value);
         propagate(Node.getSecond(),value);
         break;
 
-    case PROPNode::NOT:
+    case NOT:
         if(value==1)
             value=0;
         propagate(Node.getFirst(),value);
         break;
 
-    case PROPNode::ATOM:
+    case ATOM:
         m_pWS->m_mRelevantAtoms.insert(entry,value);
         break;
-    case PROPNode::TRUE:
+    case TRUE:
         break;
     }
 }
@@ -117,7 +117,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
     const PROPNode Node=m_pTB->getNodeAt(entry);
 
 
-    if(Node.getType()== PROPNode::ATOM){
+    if(Node.getType()== ATOM){
         if(m_pWS->m_mRelevantAtoms.contains(entry))
             return m_pWS->m_mRelevantAtoms.value(entry);
         else
@@ -127,12 +127,12 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
     int first =eval(Node.getFirst(),ruleType);
     int second;
 
-    if(Node.getType()!=PROPNode::NOT){
+    if(Node.getType()!=NOT){
         second=eval(Node.getSecond(),ruleType);
     }
 
     switch(Node.getType()){
-    case PROPNode::IF:
+    case IF:
         if(ruleType == Workspace::RuleType::ModusTollens){
             qDebug()<<"The consequent of rule\t"<< m_pWS->m_vRules.indexOf(entry)+1<<
                       "has a value of:\t"<<second<<Qt::endl;
@@ -159,7 +159,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
 
         return first;
         break;
-    case PROPNode::AND:
+    case AND:
         if(first==0 && second==0)
             return 0;
         if(first==1 && second== 1)
@@ -167,7 +167,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
         return -1;
         break;
 
-    case PROPNode::OR:
+    case OR:
         if(first ==1 || second==1)
             return 1;
         if(first==-1 || second==-1)
@@ -175,7 +175,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
         return 0;
         break;
 
-    case PROPNode::NOT:
+    case NOT:
         if(first==1)
             return 0;
         if(first == 0)
@@ -183,7 +183,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
         return -1;
         break;
 
-    case PROPNode::IFF:
+    case IFF:
         if((first!= 1 && second != 1)||(first==1 && second==1))
             return 1;
         if(first==-1 || second==-1)
@@ -191,7 +191,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
         return 0;
         break;
 
-    case PROPNode::TRUE:
+    case TRUE:
         return 1;
         break;
 
@@ -209,7 +209,7 @@ bool InferenceKernel::isCube(int entry){
     int second;
 
     switch(node.getType()){
-    case PROPNode::NOT:
+    case NOT:
         first=isCube(node.getFirst());
 
         if(first==1)
@@ -218,11 +218,11 @@ bool InferenceKernel::isCube(int entry){
             return 0;
         break;
 
-    case PROPNode::ATOM:
+    case ATOM:
         return 1;
         break;
 
-    case PROPNode::AND:
+    case AND:
         first=isCube(node.getFirst());
         second=isCube(node.getSecond());
 
@@ -232,10 +232,10 @@ bool InferenceKernel::isCube(int entry){
             return 0;
         break;
 
-    case PROPNode::OR:
-    case PROPNode::IF:
-    case PROPNode::IFF:
-    case PROPNode::TRUE:
+    case OR:
+    case IF:
+    case IFF:
+    case TRUE:
     default:
         return 0;
         break;
@@ -251,7 +251,7 @@ bool InferenceKernel::isClousure(int entry){
     int second;
 
     switch(node.getType()){
-    case PROPNode::NOT:
+    case NOT:
         first=isClousure(node.getFirst());
         if(first==1)
             return 1;
@@ -259,11 +259,11 @@ bool InferenceKernel::isClousure(int entry){
             return 0;
         break;
 
-    case PROPNode::ATOM:
+    case ATOM:
         return 1;
         break;
 
-    case PROPNode::OR:
+    case OR:
         first=isClousure(node.getFirst());
         second=isClousure(node.getSecond());
 
@@ -273,10 +273,10 @@ bool InferenceKernel::isClousure(int entry){
             return 0;
         break;
 
-    case PROPNode::AND:
-    case PROPNode::IF:
-    case PROPNode::IFF:
-    case PROPNode::TRUE:
+    case AND:
+    case IF:
+    case IFF:
+    case TRUE:
     default:
         return 0;
         break;
@@ -297,7 +297,7 @@ bool InferenceKernel::isAbleModusPonens(int entry){
     bool first;
     bool second;
 
-    if(Node.getType()==PROPNode::IF){
+    if(Node.getType()==IF){
         first=isCube(Node.getFirst());
         second=isCube(Node.getSecond());
 
@@ -322,7 +322,7 @@ bool InferenceKernel::isAbleModusTollens(int entry){
     bool first;
     bool second;
 
-    if(Node.getType()==PROPNode::IF){
+    if(Node.getType()==IF){
         first=isCube(Node.getFirst());
         second=isClousure(Node.getSecond());
 

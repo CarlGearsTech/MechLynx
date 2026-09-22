@@ -10,7 +10,7 @@ TARGET = PROPCompilerBackup
 TEMPLATE = lib
 
 CONFIG += staticlib
-CONFIG += c++20
+CONFIG += c++23
 
 DEFINES += QT_DEPRECATED_WARNINGS
 

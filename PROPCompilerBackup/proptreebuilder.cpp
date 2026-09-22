@@ -1,104 +1,82 @@
 #include "proptreebuilder.h"
 
-PROPTreeBuilder::PROPTreeBuilder()
-: _treeLst{}, _symblLst{}, _mapSymbol2Entry{}, _mapEntry2Symbol{}
-{
+PROPTreeBuilder::PROPTreeBuilder() : _tree{} {}
 
-}
-
-PROPNode PROPTreeBuilder::getNodeAt(qsizetype  idx)const
+PROPNode PROPTreeBuilder::getNodeAt(qsizetype idx) const
 {
     /* Out of boundaries is checked by Qt.*/
-    return _treeLst.at(idx);
+    return _tree._treeLst.at(idx);
 }
 
-QString PROPTreeBuilder::getSymbolAt(qsizetype idx)const
+qsizetype PROPTreeBuilder::getTreeSize() const
+{
+    return _tree._treeLst.size();
+}
+
+QString PROPTreeBuilder::getSymbolFromEntry(int entry) const
+{
+    return _tree._mapEntry2Symbol.value(entry);
+}
+
+QMap<QString, int> PROPTreeBuilder::getMapSymbolEntry() const
+{
+    return _tree._mapSymbol2Entry;
+}
+
+QString PROPTreeBuilder::getSymbolAt(qsizetype idx) const
 {
     /* Out of boundaries is checked by Qt.*/
-    return _symblLst.at(idx);
+    return _tree._symblLst.at(idx);
 }
 
-int PROPTreeBuilder::Not(int first){
-    _treeLst.append(PROPNode(PROPNode::NOT,first,-1));
-    return _treeLst.size()-1;
-}
-
-int PROPTreeBuilder::And(int first, int second){
-    _treeLst.append(PROPNode(PROPNode::AND,first,second));
-    return _treeLst.size()-1;
-}
-
-int PROPTreeBuilder::If(int first, int second){
-    _treeLst.append(PROPNode(PROPNode::IF,first,second));
-    return _treeLst.size()-1;
-}
-
-int PROPTreeBuilder::Iff(int first, int second){
-    _treeLst.append(PROPNode(PROPNode::IFF,first,second));
-    return _treeLst.size()-1;
-}
-
-int PROPTreeBuilder::Or(int first, int second){
-    _treeLst.append(PROPNode(PROPNode::OR,first,second));
-    return _treeLst.size()-1;
-}
-
-int PROPTreeBuilder::True(){
-    _treeLst.append(PROPNode(PROPNode::TRUE,-1,-1));
-    return _treeLst.size()-1;
-}
-
-/**
- * @brief Inserts an atom if it does not already exist in the tree.
- * @return The newly created node from the list.
- * @note The node also updates the maps and symbol list.
- */
-int PROPTreeBuilder::atom(const QString &str)
+int PROPNodeFactory::createByName(
+    PROPTree &tree,
+    NodeType type,
+    const QString &str)
 {
-    const auto it = _mapSymbol2Entry.find(str);
-    if(it != _mapSymbol2Entry.end())
-        return it.value();
-    else
+    switch (type)
     {
-        _mapSymbol2Entry.insert(str,_treeLst.size());
-        _mapEntry2Symbol.insert(_treeLst.size(),str);
-        _treeLst.append(PROPNode::make_atom(_symblLst.size()));
-        _symblLst.push_back(str);
-        return _treeLst.size()-1;
+        case NodeType::ATOM:
+        {
+            if (str.isEmpty())
+                return -1;
+            const auto it = tree._mapSymbol2Entry.find(str);
+            if (it != tree._mapSymbol2Entry.end())
+                return it.value();
+            else
+            {
+                /* Inserting helpers containers.*/
+                tree._mapSymbol2Entry.insert(str, tree._treeLst.size());
+                tree._mapEntry2Symbol.insert(tree._treeLst.size(), str);
+                /* TreeLst indexing based on all posible entries already inserted.*/
+                tree._treeLst.append(PROPNode::make_atom(tree._symblLst.size()));
+                tree._symblLst.push_back(str);
+                /* Return index of new entry.*/
+                return tree._treeLst.size() - 1;
+            }
+        }
+        default:
+        {
+            throw std::runtime_error("Unknown PROPNodeType");
+            return -1;
+        }
     }
 }
 
-int PROPNodeFactory::createAtom(const QString &string)
+int PROPNodeFactory::create(
+    PROPTree &tree,
+    NodeType type,
+    int first,
+    int second)
 {
-    return 0;
-}
-
-int PROPNodeFactory::createNot(int first)
-{
-    return 0;
-}
-
-int PROPNodeFactory::createIf(int first, int second)
-{
-    return 0;
-}
-
-int PROPNodeFactory::createAnd(int first, int second)
-{
-    return 0;
-}
-
-int PROPNodeFactory::createIff(int first, int second)
-{
-    return 0;
-}
-
-int PROPNodeFactory::createOr(int first, int second)
-{
-    return 0;
-}
-
-int PROPNodeFactory::createTrue()
-{
-    return 0;
+    if(type >= MAX_NODE_TYPE)
+    {
+        throw std::runtime_error("Unknown PROPNodeType");
+        return -1;
+    }
+    else
+    {
+        tree._treeLst.append(PROPNode(type, first, second));
+        return tree._treeLst.size() - 1u;
+    }
 }

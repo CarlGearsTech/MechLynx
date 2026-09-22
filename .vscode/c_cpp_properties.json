@@ -1,10 +1,10 @@
 {
     "configurations": [
         {
-            "name": "Qt-MinGW-C++20",
+            "name": "Qt-MinGW-C++23",
             "compilerPath": "C:/Qt/Tools/mingw1310_64/bin/g++.exe",
             "cStandard": "c17",
-            "cppStandard": "c++20",
+            "cppStandard": "c++23",
             "intelliSenseMode": "windows-gcc-x64",
             "includePath": [
                 "${workspaceFolder}/**",
