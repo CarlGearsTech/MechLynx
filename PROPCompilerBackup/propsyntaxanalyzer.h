@@ -6,14 +6,13 @@
 class PROPSyntaxAnalyzer
 {
 protected:
-    PROPLexAnalyzer* m_pLA;
-    PROPTreeBuilder* m_pTB;
+    PROPLexAnalyzer *m_pLA;
+    PROPTreeBuilder *m_pTB;
 private:
-    virtual bool Compile()const=0;
+    virtual bool Compile() const = 0;
 public:
-    PROPSyntaxAnalyzer(PROPLexAnalyzer* pLa, PROPTreeBuilder* pTB):
-        m_pLA(pLa),m_pTB(pTB){}
-    virtual ~PROPSyntaxAnalyzer(){}
+    PROPSyntaxAnalyzer(PROPLexAnalyzer *pLa, PROPTreeBuilder *pTB) : m_pLA(pLa), m_pTB(pTB) {}
+    virtual ~PROPSyntaxAnalyzer() {}
 };
 
 #endif // PROPSYNTAXANALYZER_H

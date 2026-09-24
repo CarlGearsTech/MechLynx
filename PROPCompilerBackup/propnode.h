@@ -1,7 +1,17 @@
 #ifndef PROPNODE_H
 #define PROPNODE_H
 
-enum NodeType {ATOM,NOT,IF,IFF,AND,OR,TRUE, MAX_NODE_TYPE};
+enum NodeType
+{
+    ATOM,
+    NOT,
+    IF,
+    IFF,
+    AND,
+    OR,
+    TRUE,
+    MAX_NODE_TYPE
+};
 
 /**
  * @class PROPNode
@@ -24,10 +34,10 @@ public:
     {
         return PROPNode(ATOM, first, -1);
     }
-    PROPNode(NodeType type, int first, int second): _nodeType(type),_nFirst(first),_nSecond(second){}
-    [[nodiscard]] int getFirst()const{return _nFirst;}
-    [[nodiscard]] int getSecond()const{return _nSecond;}
-    [[nodiscard]] NodeType getType()const{return _nodeType;}
+    PROPNode(NodeType type, int first, int second) : _nodeType(type), _nFirst(first), _nSecond(second) {}
+    [[nodiscard]] int getFirst() const { return _nFirst; }
+    [[nodiscard]] int getSecond() const { return _nSecond; }
+    [[nodiscard]] NodeType getType() const { return _nodeType; }
 private:
     NodeType _nodeType;
     int _nFirst;

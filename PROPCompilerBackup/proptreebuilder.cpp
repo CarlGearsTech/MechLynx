@@ -26,7 +26,6 @@ qsizetype PROPTreeBuilder::getTreeSize() const
     return _tree._treeLst.size();
 }
 
-
 /**
  * @brief Retrieves the symbol associated with a node entry.
  *
@@ -49,7 +48,7 @@ QString PROPTreeBuilder::getSymbolFromEntry(int entry) const
  * @note Returns the default value for the map's value type if the symbol
  *       is not present.
  */
-int PROPTreeBuilder::getEntryFromSymbol(const QString& str)const
+int PROPTreeBuilder::getEntryFromSymbol(const QString &str) const
 {
     return _tree._mapSymbol2Entry.value(str);
 }
