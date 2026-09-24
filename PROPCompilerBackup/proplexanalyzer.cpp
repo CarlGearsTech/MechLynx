@@ -55,7 +55,6 @@ void PROPLexAnalyzer::popFile()
         auto pFile = m_inputs.pop();
         delete pFile;
     }
-       m_inputs.pop();
 }
 
 /**

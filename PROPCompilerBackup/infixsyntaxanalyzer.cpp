@@ -74,7 +74,7 @@ bool InfixSyntaxAnalyzer::Compile()const
 
         while(!l_signal)
         {
-            PropLexem L=m_pLA->getToken();
+            PropLexem L = m_pLA->getToken();
             if(L.getType() == EOL)
             {
                 ++l_nErrorRow;
@@ -153,15 +153,16 @@ bool InfixSyntaxAnalyzer::Compile()const
         if(l_signal==2)
             break;
 
-        PropLexem l_rightToken=l_tokenStack.pop();
-        PropLexem l_operation= l_tokenStack.pop();
+        PropLexem l_rightToken = l_tokenStack.pop();
+        PropLexem l_operation = l_tokenStack.pop();
 
-        if(l_isRuleAvailable){
-            l_right=l_builderStack.pop();
-            l_left=l_builderStack.pop();
-            l_operation=m_pLA->buildToken(OPERATOR,"&");
-            l_operation.setTreeIdx(m_pTB->And(l_left,l_right));
-            l_isRuleAvailable=false;
+        if (l_isRuleAvailable)
+        {
+            l_right = l_builderStack.pop();
+            l_left = l_builderStack.pop();
+            l_operation = m_pLA->buildToken(OPERATOR, "&");
+            l_operation.setTreeIdx(m_pTB->And(l_left, l_right));
+            l_isRuleAvailable = false;
         }
         else{
             switch (l_rightToken.getType()) 
