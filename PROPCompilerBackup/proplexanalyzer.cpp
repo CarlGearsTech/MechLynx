@@ -109,18 +109,21 @@ PropLexem PROPLexAnalyzer::getToken()
         {
             switch (behaviorStates)
             {
-            case 0:
+            case LEXPROP_FIRST_LETTER_STATE:
                 L.setType(ENDOFF);
                 return L;
                 break;
-            case 1: //>
-            case 2: //->
+            case LEXPROP_END_OP_STATE: //>
+            case LEXPROP_BEGIN_OP_STATE: //->
                 L.setType(ERROR);
                 return L;
                 break;
             case 3:
                 L.setType(ID);
                 return L;
+                break;
+            case LEXPROP_COMMENT_STATE:
+            default:
                 break;
             }
         }
