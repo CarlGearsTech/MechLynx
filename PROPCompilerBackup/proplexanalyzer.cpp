@@ -1,12 +1,11 @@
 #include <QDebug>
 #include "proplexanalyzer.h"
 
-PROPLexAnalyzer::PROPLexAnalyzer():m_nLastPos(0)
+PROPLexAnalyzer::PROPLexAnalyzer() : _lastPos(0)
 {
-    
 }
 
-PropLexem PROPLexAnalyzer::buildToken(PropLexemOp_Type type,const QString& token)
+PropLexem PROPLexAnalyzer::buildToken(PropLexemOp_Type type, const QString &token)
 {
     PropLexem l(type, token);
     return l;
@@ -25,17 +24,17 @@ PropLexem PROPLexAnalyzer::buildToken(PropLexemOp_Type type,const QString& token
  * @note Ownership of the opened file is transferred to the input stack
  *       through a std::unique_ptr.
  */
-bool PROPLexAnalyzer::pushFile(const QString& fileName)
+bool PROPLexAnalyzer::pushFile(const QString &fileName)
 {
     auto pFile = new QFile(fileName);
-    if(pFile->open(QFile::ReadOnly | QFile::Text))
+    if (pFile->open(QFile::ReadOnly | QFile::Text))
     {
         m_inputs.push(pFile);
         return true;
     }
     else
     {
-        qDebug()<<"Error while uploading the file"<< Qt::endl;
+        qDebug() << "Error while uploading the file" << Qt::endl;
         return false;
     }
 }
@@ -50,7 +49,7 @@ bool PROPLexAnalyzer::pushFile(const QString& fileName)
  */
 void PROPLexAnalyzer::popFile()
 {
-    if(!m_inputs.empty())
+    if (!m_inputs.empty())
     {
         auto pFile = m_inputs.pop();
         delete pFile;
@@ -68,7 +67,7 @@ void PROPLexAnalyzer::popFile()
  */
 QString PROPLexAnalyzer::read()
 {
-    if(m_inputs.empty())
+    if (m_inputs.empty())
         return "ERROR, file empty";
     QTextStream stream(m_inputs.top());
     return stream.readAll();
@@ -82,24 +81,34 @@ QString PROPLexAnalyzer::read()
  */
 void PropLexem::operator+=(QChar ch)
 {
-    _token+= ch;
+    _token += ch;
 }
 
 PropLexem PROPLexAnalyzer::getToken()
 {
+    enum LexPropState_Type
+    {
+        LEXPROP_FIRST_LETTER_STATE,
+        LEXPROP_END_OP_STATE,
+        LEXPROP_BEGIN_OP_STATE,
+        LEXPROP_ID_STATE,
+        LEXPROP_COMMENT_STATE
+    };
     PropLexem L;
-    int nStates=0;
-
-    m_Stream.setDevice(m_inputs.top());
-    m_Stream.seek(m_nLastPos);
+    LexPropState_Type behaviorStates = LEXPROP_FIRST_LETTER_STATE;
+    _fileStream.setDevice(m_inputs.top());
+    /* Initial set of the file to the last position after the previous run.*/
+    _fileStream.seek(_lastPos);
 
     QChar takenChar;
-    //Infinite loop taking char from the stream until reach to a LEXEM type.
+    // Infinite loop taking char from the stream until reach to a LEXEM type.
     do
     {
-        //Handling cases where it reached the End of File
-        if(m_Stream.atEnd()){
-            switch(nStates){
+        /*EOF reached case.*/
+        if (_fileStream.atEnd())
+        {
+            switch (behaviorStates)
+            {
             case 0:
                 L.setType(ENDOFF);
                 return L;
@@ -116,126 +125,138 @@ PropLexem PROPLexAnalyzer::getToken()
             }
         }
 
-        //Handling pending Chars from the stream to ID building
-        if(m_pendingChars.size())
-        {
-            if(!m_pendingChars.top().isSpace() || m_pendingChars.top()=='\n')
-                takenChar=m_pendingChars.pop();
-            else
-                m_Stream>>takenChar;
-        }
-        else
-            m_Stream>>takenChar;
+        /* Building pending ID case */
+        buildPendingID(takenChar);
 
-        //Defines the different behaviour based in states:
-        //Cases defines what means every state.
-        switch (nStates) 
+        /* Behavior states*/
+        switch (behaviorStates)
         {
-        case 0://First Letter found
-            switch (takenChar.toLatin1()) 
+        /* First letter case.*/
+        case LEXPROP_FIRST_LETTER_STATE:
+            switch (takenChar.toLatin1())
             {
             case '#':
-                nStates=4;
+                behaviorStates = LEXPROP_COMMENT_STATE;
                 break;
             case '&':
             case '|':
             case '!':
                 L.setType(OPERATOR);
-                L+=takenChar;
-                m_nLastPos=m_Stream.pos();
+                L += takenChar;
+                _lastPos = _fileStream.pos();
                 return L;
                 break;
             case '-':
-                L+=takenChar;
-                nStates=1;
+                L += takenChar;
+                behaviorStates = LEXPROP_END_OP_STATE;
                 break;
             case '<':
-                L+=takenChar;
-                nStates=2;
+                L += takenChar;
+                behaviorStates = LEXPROP_BEGIN_OP_STATE;
                 break;
             case '\n':
                 L.setType(EOL);
-                L+=takenChar;
-                m_nLastPos=m_Stream.pos();
+                L += takenChar;
+                _lastPos = _fileStream.pos();
                 return L;
                 break;
             case ' ':
             case '\r':
             case '\t':
                 break;
-            case'(':
+            case '(':
                 L.setType(OPENBRACKET);
                 L.setToken(takenChar);
-                m_nLastPos=m_Stream.pos();
+                _lastPos = _fileStream.pos();
                 return L;
                 break;
             case ')':
                 L.setType(CLOSEDBRAKET);
                 L.setToken(takenChar);
-                m_nLastPos=m_Stream.pos();
+                _lastPos = _fileStream.pos();
                 return L;
                 break;
+            /* Any character that can be part of the ID name.*/
             default:
-                if(takenChar.isLetter() || takenChar=='_'){
-                    L+=takenChar;
-                    nStates=3;
+                if (takenChar.isLetter() || takenChar == '_')
+                {
+                    L += takenChar;
+                    behaviorStates = LEXPROP_ID_STATE;
                 }
-                else{
-                    L+=takenChar;
+                else
+                {
+                    L += takenChar;
                     L.setType(ERROR);
-                    m_nLastPos=m_Stream.pos();
+                    _lastPos = _fileStream.pos();
                     return L;
                 }
                 break;
             }
             break;
-        case 1: //>
-            L+=takenChar;
-            if('>'==takenChar)
+        /* Operator end found case.*/
+        case LEXPROP_END_OP_STATE: // >
+            L += takenChar;
+            if ('>' == takenChar)
                 L.setType(OPERATOR);
             else
                 L.setType(ERROR);
-            m_nLastPos=m_Stream.pos();
+            _lastPos = _fileStream.pos();
             return L;
             break;
-
-        case 2:// -
-            L+=takenChar;
-            if('-' == takenChar)
-                nStates=1;
-            else{
+        /* Operator begining found case.*/
+        case LEXPROP_BEGIN_OP_STATE: // -
+            L += takenChar;
+            if ('-' == takenChar)
+                behaviorStates = LEXPROP_END_OP_STATE;
+            else
+            {
                 L.setType(ERROR);
-                m_nLastPos=m_Stream.pos();
+                _lastPos = _fileStream.pos();
                 return L;
             }
             break;
-
-        case 3: //ID
-            if(takenChar.isLetterOrNumber() || takenChar=='_'){
-                L+=takenChar;
-                nStates=3;
+        case LEXPROP_ID_STATE: // ID
+            if (takenChar.isLetterOrNumber() || takenChar == '_')
+            {
+                L += takenChar;
+                behaviorStates = LEXPROP_ID_STATE;
             }
-            else{
+            else
+            {
                 L.setType(ID);
-                m_pendingChars.push(takenChar);
-                m_nLastPos=m_Stream.pos();
+                _pendingChars.push(takenChar);
+                _lastPos = _fileStream.pos();
                 return L;
             }
             break;
-
-        case 4:// Comments
-            if(takenChar != '\n'){
-                L+=takenChar;
-                nStates=4;
+        /* Comment found case.*/
+        case LEXPROP_COMMENT_STATE: // Comments
+            if (takenChar != '\n')
+            {
+                L += takenChar;
+                behaviorStates = LEXPROP_COMMENT_STATE;
             }
-            else{
+            else
+            {
                 L.setType(COMMENT);
-                m_nLastPos=m_Stream.pos();
+                _lastPos = _fileStream.pos();
                 return L;
             }
             break;
         }
-    }while(1);
+    } while (1);
 }
 
-
+void PROPLexAnalyzer::buildPendingID(QChar &takenChar)
+{
+    if (_pendingChars.size())
+    {
+        if (!_pendingChars.top().isSpace() || _pendingChars.top() == '\n')
+            takenChar = _pendingChars.pop();
+        else
+            _fileStream >> takenChar;
+    }
+    /* First char found case.*/
+    else
+        _fileStream >> takenChar;
+}

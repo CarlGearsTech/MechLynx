@@ -461,13 +461,6 @@ bool InferenceKernel::areVerifiedNewConclusions(int entry)
         emit displayConclusions(l_displayConclusions);
 
     return m_bContinueInferenceProcess;
-//    logOnlyForFunctions(Q_FUNC_INFO);
-
-//    prepareConclusionToBeDisplayed(entry);
-
-//    EmitDisplayConclusionIfThereAreConclusionsToDisplay(); //Signal to declare
-
-//    return m_bContinueInferenceProcess;
 }
 
 void InferenceKernel::prepareConclusionToBeDisplayed(int entry)

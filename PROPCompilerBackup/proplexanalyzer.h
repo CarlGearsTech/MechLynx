@@ -46,19 +46,16 @@ class PROPLexAnalyzer
 {
 protected:
     QStack<QFile*> m_inputs;
-    QStack<QChar> m_pendingChars;
-    QTextStream m_Stream;
-    int m_nLastPos;
+    QStack<QChar> _pendingChars;
+    QTextStream _fileStream;
+    int _lastPos;
 public:
     PropLexem buildToken(PropLexemOp_Type type, const QString &token);
     bool pushFile(const QString &fileName);
     void popFile();
     QString read();
     PropLexem getToken();
-    PROPLexAnalyzer(const PROPLexAnalyzer& pLA) = delete;
-    PROPLexAnalyzer& operator=(const PROPLexAnalyzer& pLA) = delete;
-    PROPLexAnalyzer(PROPLexAnalyzer&& pLA) noexcept = default;
-    PROPLexAnalyzer& operator=(PROPLexAnalyzer&& pLA) noexcept = default;
+    void buildPendingID(QChar &takenChar);
     PROPLexAnalyzer();
 };
 #endif // PROPLEXANALYZER_H

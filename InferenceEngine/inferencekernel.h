@@ -10,15 +10,13 @@
 
 class QuestionDialog;
 
-class INFERENCEENGINESHARED_EXPORT InferenceKernel:public QObject
+class INFERENCEENGINESHARED_EXPORT InferenceKernel : public QObject
 {
     Q_OBJECT
-
 signals:
     void displayConclusions(QList<int> conclusions);
     void knowledgeExhausted();
     void atomValueDemanded(int atomEntry);
-
 private:
     const PROPTreeBuilder* const m_pTB;
     Workspace* const m_pWS;
