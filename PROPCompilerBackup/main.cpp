@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
-    if(la.pushFile(":/Resources/KnowledgeBase")){
-        //PROPLexAnalyzer::LEXEM l=la.getToken();
+    if(la.pushFile(":/Resources/KnowledgeBase"))
+    {
         if(IS.Compile())
             out<<"Success in the compilation";
     }

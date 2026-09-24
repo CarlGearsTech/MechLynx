@@ -12,39 +12,41 @@ bool RPNSyntaxAnalyzer::Compile()const{
     while(l_nSignal){
         auto L=m_pLA->getToken();
 
-        switch(L.m_type){
-        case PROPLexAnalyzer::LEXEM::ID:
-            l_builderStack.push(m_pTB->atom(L.m_sToken));
+        switch(L.getType())
+        {
+        case ID:
+            l_builderStack.push(m_pTB->atom(L.getToken()));
             break;
-        case PROPLexAnalyzer::LEXEM::OPERATOR:
-            if(l_builderStack.size()>=2 && L.m_sToken != "!"){
+        case OPERATOR:
+            if(l_builderStack.size()>=2 && L.getToken() != "!")
+            {
                 int right=l_builderStack.pop();
                 int left=l_builderStack.pop();
 
-                if(L.m_sToken=="->")
+                if(L.getToken() == "->")
                     l_builderStack.push(m_pTB->If(left,right));
-                else if(L.m_sToken=="|")
+                else if(L.getToken() == "|")
                     l_builderStack.push(m_pTB->Or(left,right));
-                else if(L.m_sToken=="&")
+                else if(L.getToken() == "&")
                     l_builderStack.push(m_pTB->And(left,right));
                 else //bi implication
                     l_builderStack.push(m_pTB->Iff(left,right));
             }//Binary op if
-            else if(l_builderStack.size()>=1 && L.m_sToken=="!"){
+            else if(l_builderStack.size()>=1 && L.getToken() == "!"){
                 int left=l_builderStack.pop();
                 l_builderStack.push(m_pTB->Not(left));
             }
             else
                 l_nSignal=2;
             break;
-        case PROPLexAnalyzer::LEXEM::ENDOFF:
+        case ENDOFF:
             l_nSignal=4;
             break;
-        case PROPLexAnalyzer::LEXEM::ERROR:
+        case ERROR:
             l_nSignal=1;
             break;
-        case PROPLexAnalyzer::LEXEM::OPENBRACKET:
-        case PROPLexAnalyzer::LEXEM::CLOSEDBRAKET:
+        case OPENBRACKET:
+        case CLOSEDBRAKET:
         default:
             l_nSignal=3;
             break;

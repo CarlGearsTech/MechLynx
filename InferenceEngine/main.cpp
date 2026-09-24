@@ -10,7 +10,8 @@
 #include <iostream>
 #include <QTextStream>
 
-int main(int argc,char* argv[]){
+int main(int argc,char* argv[])
+{
     QTextStream out(stdout);
     QTextStream in(stdin);
 

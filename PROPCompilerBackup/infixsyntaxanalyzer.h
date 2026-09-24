@@ -2,10 +2,14 @@
 #define INFIXSYNTAXANALYZER_H
 #include "propsyntaxanalyzer.h"
 
-class InfixSyntaxAnalyzer: public PROPSyntaxAnalyzer{
-    void buildLeftToken(int& left,int& right,PROPLexAnalyzer::LEXEM& operation,
+class InfixSyntaxAnalyzer: public PROPSyntaxAnalyzer
+{
+    void buildLeftToken(int& left,
+                        int& right,
+                        PropLexem& operation,
                         unsigned int& signal,
-                        QStack<int>& builderStack,QStack<PROPLexAnalyzer::LEXEM>& tokenStack,
+                        QStack<int>& builderStack,
+                        QStack<PropLexem>& tokenStack,
                         bool& isValidated)const;
 
 public:
