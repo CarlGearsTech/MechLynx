@@ -20,6 +20,15 @@ enum PropLexemOp_Type
     COMMENT
 };
 
+enum LexPropState_Type
+{
+    LEXPROP_FIRST_LETTER_STATE,
+    LEXPROP_END_OP_STATE,
+    LEXPROP_BEGIN_OP_STATE,
+    LEXPROP_ID_STATE,
+    LEXPROP_COMMENT_STATE
+};
+
 /**
  * @brief Embedded structure that assigns lexical meaning to words read from a file
  *        and provides information used by the tree structure.
@@ -28,7 +37,7 @@ class PropLexem
 {
 public:
     PropLexem() = default;
-    PropLexem(PropLexemOp_Type type, const QString& token): _type(type), _token(token), _treeIdx() {}
+    PropLexem(PropLexemOp_Type type, const QString& token = ""): _type(type), _token(token), _treeIdx() {}
     void setType(PropLexemOp_Type type) {_type = type;}
     PropLexemOp_Type getType()const {return _type;}
     void operator+=(QChar ch);
@@ -44,11 +53,14 @@ private:
 
 class PROPLexAnalyzer
 {
+private:
+    void handleEOF(LexPropState_Type behaviorStates, PropLexem &L) const;
 protected:
-    QStack<QFile*> _inputs;
+    QStack<QFile *> _inputs;
     QStack<QChar> _pendingChars;
     QTextStream _fileStream;
     int _lastPos;
+
 public:
     PropLexem buildToken(PropLexemOp_Type type, const QString &token);
     bool pushFile(const QString &fileName);

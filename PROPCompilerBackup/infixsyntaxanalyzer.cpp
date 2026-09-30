@@ -13,7 +13,7 @@ void InfixSyntaxAnalyzer::buildLeftToken(int &left,
     if (operation.getToken() == "!")
     {
         right = builderStack.pop();
-        operation.setTreeIdx(_pTB->createNot(right));
+        operation.setTreeIdx(_pTB->Not(right));
     }
     else
     {
@@ -32,7 +32,7 @@ void InfixSyntaxAnalyzer::buildLeftToken(int &left,
         switch (leftToken.getType())
         {
         case ID:
-            builderStack.push(_pTB->createAtom(leftToken.getToken()));
+            builderStack.push(_pTB->atom(leftToken.getToken()));
             left = builderStack.pop();
             right = builderStack.pop();
             isValidated = true;
@@ -95,7 +95,7 @@ bool InfixSyntaxAnalyzer::Compile() const
                     if (l_isFirstRule)
                     {
                         l_isFirstRule = false;
-                        l_builderStack.push(_pTB->createTrue());
+                        l_builderStack.push(_pTB->True());
                         l_tokenStack.push(_pLA->buildToken(OPERATOR, "True"));
                     }
                     l_isRuleAvailable = true;
@@ -164,7 +164,7 @@ bool InfixSyntaxAnalyzer::Compile() const
             l_right = l_builderStack.pop();
             l_left = l_builderStack.pop();
             l_operation = _pLA->buildToken(OPERATOR, "&");
-            l_operation.setTreeIdx(_pTB->createAnd(l_left, l_right));
+            l_operation.setTreeIdx(_pTB->And(l_left, l_right));
             l_isRuleAvailable = false;
         }
         else
@@ -172,7 +172,7 @@ bool InfixSyntaxAnalyzer::Compile() const
             switch (l_rightToken.getType())
             {
             case ID:
-                l_builderStack.push(_pTB->createAtom(l_rightToken.getToken()));
+                l_builderStack.push(_pTB->atom(l_rightToken.getToken()));
                 buildLeftToken(l_left, l_right, l_operation, l_signal, l_builderStack,
                                l_tokenStack, l_isValidated);
                 break;
@@ -193,13 +193,13 @@ bool InfixSyntaxAnalyzer::Compile() const
             if (l_isValidated)
             {
                 if (l_operation.getToken() == "->")
-                    l_operation.setTreeIdx(_pTB->createIf(l_left, l_right));
+                    l_operation.setTreeIdx(_pTB->If(l_left, l_right));
                 else if (l_operation.getToken() == "&")
-                    l_operation.setTreeIdx(_pTB->createAnd(l_left, l_right));
+                    l_operation.setTreeIdx(_pTB->And(l_left, l_right));
                 else if (l_operation.getToken() == "|")
-                    l_operation.setTreeIdx(_pTB->createOr(l_left, l_right));
+                    l_operation.setTreeIdx(_pTB->Or(l_left, l_right));
                 else if (l_operation.getToken() == "<->")
-                    l_operation.setTreeIdx(_pTB->createIff(l_left, l_right));
+                    l_operation.setTreeIdx(_pTB->Iff(l_left, l_right));
                 else
                     l_signal = 2;
                 l_isValidated = false;

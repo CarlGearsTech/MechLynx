@@ -1,6 +1,7 @@
 #include <QDebug>
 #include "proplexanalyzer.h"
 
+
 PROPLexAnalyzer::PROPLexAnalyzer() : _lastPos(0)
 {
 }
@@ -84,16 +85,28 @@ void PropLexem::operator+=(QChar ch)
     _token += ch;
 }
 
+void PROPLexAnalyzer::handleEOF(LexPropState_Type behaviorStates, PropLexem &L) const
+{
+    switch (behaviorStates)
+    {
+    case LEXPROP_FIRST_LETTER_STATE:
+        L.setType(ENDOFF);
+        return;
+    case LEXPROP_END_OP_STATE:   //>
+    case LEXPROP_BEGIN_OP_STATE: //->
+        L.setType(ERROR);
+        return;
+    case 3:
+        L.setType(ID);
+        return;
+    case LEXPROP_COMMENT_STATE:
+    default:
+        break;
+    }
+}
+
 PropLexem PROPLexAnalyzer::getToken()
 {
-    enum LexPropState_Type
-    {
-        LEXPROP_FIRST_LETTER_STATE,
-        LEXPROP_END_OP_STATE,
-        LEXPROP_BEGIN_OP_STATE,
-        LEXPROP_ID_STATE,
-        LEXPROP_COMMENT_STATE
-    };
     PropLexem L;
     LexPropState_Type behaviorStates = LEXPROP_FIRST_LETTER_STATE;
     _fileStream.setDevice(_inputs.top());
@@ -107,30 +120,11 @@ PropLexem PROPLexAnalyzer::getToken()
         /*EOF reached case.*/
         if (_fileStream.atEnd())
         {
-            switch (behaviorStates)
-            {
-            case LEXPROP_FIRST_LETTER_STATE:
-                L.setType(ENDOFF);
-                return L;
-                break;
-            case LEXPROP_END_OP_STATE: //>
-            case LEXPROP_BEGIN_OP_STATE: //->
-                L.setType(ERROR);
-                return L;
-                break;
-            case 3:
-                L.setType(ID);
-                return L;
-                break;
-            case LEXPROP_COMMENT_STATE:
-            default:
-                break;
-            }
+            handleEOF(behaviorStates, L);
+            return L;
         }
-
         /* Building pending ID case */
         buildPendingID(takenChar);
-
         /* Behavior states*/
         switch (behaviorStates)
         {

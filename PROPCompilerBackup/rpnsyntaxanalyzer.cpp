@@ -15,7 +15,7 @@ bool RPNSyntaxAnalyzer::Compile() const
         switch (L.getType())
         {
         case ID:
-            l_builderStack.push(_pTB->createAtom(L.getToken()));
+            l_builderStack.push(_pTB->atom(L.getToken()));
             break;
         case OPERATOR:
             if (l_builderStack.size() >= 2 && L.getToken() != "!")
@@ -24,18 +24,18 @@ bool RPNSyntaxAnalyzer::Compile() const
                 int left = l_builderStack.pop();
 
                 if (L.getToken() == "->")
-                    l_builderStack.push(_pTB->createIf(left, right));
+                    l_builderStack.push(_pTB->If(left, right));
                 else if (L.getToken() == "|")
-                    l_builderStack.push(_pTB->createOr(left, right));
+                    l_builderStack.push(_pTB->Or(left, right));
                 else if (L.getToken() == "&")
-                    l_builderStack.push(_pTB->createAnd(left, right));
+                    l_builderStack.push(_pTB->And(left, right));
                 else // bi implication
-                    l_builderStack.push(_pTB->createIff(left, right));
+                    l_builderStack.push(_pTB->Iff(left, right));
             } // Binary op if
             else if (l_builderStack.size() >= 1 && L.getToken() == "!")
             {
                 int left = l_builderStack.pop();
-                l_builderStack.push(_pTB->createNot(left));
+                l_builderStack.push(_pTB->Not(left));
             }
             else
                 l_nSignal = 2;
