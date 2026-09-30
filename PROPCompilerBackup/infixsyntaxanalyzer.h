@@ -4,6 +4,7 @@
 
 class InfixSyntaxAnalyzer : public PROPSyntaxAnalyzer
 {
+private:
     void buildLeftToken(int &left,
                         int &right,
                         PropLexem &operation,

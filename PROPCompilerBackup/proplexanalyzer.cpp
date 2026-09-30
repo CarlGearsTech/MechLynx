@@ -29,7 +29,7 @@ bool PROPLexAnalyzer::pushFile(const QString &fileName)
     auto pFile = new QFile(fileName);
     if (pFile->open(QFile::ReadOnly | QFile::Text))
     {
-        m_inputs.push(pFile);
+        _inputs.push(pFile);
         return true;
     }
     else
@@ -49,9 +49,9 @@ bool PROPLexAnalyzer::pushFile(const QString &fileName)
  */
 void PROPLexAnalyzer::popFile()
 {
-    if (!m_inputs.empty())
+    if (!_inputs.empty())
     {
-        auto pFile = m_inputs.pop();
+        auto pFile = _inputs.pop();
         delete pFile;
     }
 }
@@ -65,11 +65,11 @@ void PROPLexAnalyzer::popFile()
  * @return The remaining content of the top input file, or an error message
  *         if the input stack is empty.
  */
-QString PROPLexAnalyzer::read()
+QString PROPLexAnalyzer::read() const
 {
-    if (m_inputs.empty())
+    if (_inputs.empty())
         return "ERROR, file empty";
-    QTextStream stream(m_inputs.top());
+    QTextStream stream(_inputs.top());
     return stream.readAll();
 }
 
@@ -96,7 +96,7 @@ PropLexem PROPLexAnalyzer::getToken()
     };
     PropLexem L;
     LexPropState_Type behaviorStates = LEXPROP_FIRST_LETTER_STATE;
-    _fileStream.setDevice(m_inputs.top());
+    _fileStream.setDevice(_inputs.top());
     /* Initial set of the file to the last position after the previous run.*/
     _fileStream.seek(_lastPos);
 

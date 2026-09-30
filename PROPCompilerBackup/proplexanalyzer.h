@@ -45,7 +45,7 @@ private:
 class PROPLexAnalyzer
 {
 protected:
-    QStack<QFile*> m_inputs;
+    QStack<QFile*> _inputs;
     QStack<QChar> _pendingChars;
     QTextStream _fileStream;
     int _lastPos;
@@ -53,7 +53,7 @@ public:
     PropLexem buildToken(PropLexemOp_Type type, const QString &token);
     bool pushFile(const QString &fileName);
     void popFile();
-    QString read();
+    QString read() const;
     PropLexem getToken();
     void buildPendingID(QChar &takenChar);
     PROPLexAnalyzer();

@@ -8,16 +8,14 @@ bool RPNSyntaxAnalyzer::Compile() const
     l_builderStack.clear();
     const QString l_signalTable[6] = {"Success", "Not enough parameters", "Not implemeted operator",
                                       "Invalid Symbol", "End of File found", "Unexpected Error"};
-
     int l_nSignal = 0;
     while (l_nSignal)
     {
         auto L = _pLA->getToken();
-
         switch (L.getType())
         {
         case ID:
-            l_builderStack.push(_pTB->atom(L.getToken()));
+            l_builderStack.push(_pTB->createAtom(L.getToken()));
             break;
         case OPERATOR:
             if (l_builderStack.size() >= 2 && L.getToken() != "!")
@@ -26,18 +24,18 @@ bool RPNSyntaxAnalyzer::Compile() const
                 int left = l_builderStack.pop();
 
                 if (L.getToken() == "->")
-                    l_builderStack.push(_pTB->If(left, right));
+                    l_builderStack.push(_pTB->createIf(left, right));
                 else if (L.getToken() == "|")
-                    l_builderStack.push(_pTB->Or(left, right));
+                    l_builderStack.push(_pTB->createOr(left, right));
                 else if (L.getToken() == "&")
-                    l_builderStack.push(_pTB->And(left, right));
+                    l_builderStack.push(_pTB->createAnd(left, right));
                 else // bi implication
-                    l_builderStack.push(_pTB->Iff(left, right));
+                    l_builderStack.push(_pTB->createIff(left, right));
             } // Binary op if
             else if (l_builderStack.size() >= 1 && L.getToken() == "!")
             {
                 int left = l_builderStack.pop();
-                l_builderStack.push(_pTB->Not(left));
+                l_builderStack.push(_pTB->createNot(left));
             }
             else
                 l_nSignal = 2;
