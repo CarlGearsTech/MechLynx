@@ -23,13 +23,13 @@ class PROPTreeBuilder
     friend class PROPNodeFactory;
 public:
     PROPTreeBuilder();
-    [[nodiscard]] int atom(QString str) { return PROPNodeFactory::createByName(_tree, NodeType::ATOM, str); }
-    [[nodiscard]] int Not(int first) { return PROPNodeFactory::create(_tree, NodeType::NOT, first); }
-    [[nodiscard]] int If(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::IF, first, second); }
-    [[nodiscard]] int And(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::AND, first, second); }
-    [[nodiscard]] int Iff(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::IFF, first, second); }
-    [[nodiscard]] int Or(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::OR, first, second); }
-    [[nodiscard]] int True() { return PROPNodeFactory::create(_tree, NodeType::TRUE); }
+    [[nodiscard]] int addAtomNode(QString str) { return PROPNodeFactory::createByName(_tree, NodeType::ATOM, str); }
+    [[nodiscard]] int addNotNode(int first) { return PROPNodeFactory::create(_tree, NodeType::NOT, first); }
+    [[nodiscard]] int addIfNode(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::IF, first, second); }
+    [[nodiscard]] int addAndNode(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::AND, first, second); }
+    [[nodiscard]] int addIffNode(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::IFF, first, second); }
+    [[nodiscard]] int addOrNode(int first, int second) { return PROPNodeFactory::create(_tree, NodeType::OR, first, second); }
+    [[nodiscard]] int addTrueNode() { return PROPNodeFactory::create(_tree, NodeType::TRUE); }
     [[nodiscard]] QString getSymbolAt(qsizetype idx) const;
     [[nodiscard]] PROPNode getNodeAt(qsizetype idx) const;
     [[nodiscard]] qsizetype getTreeSize() const;
