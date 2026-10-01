@@ -2,7 +2,7 @@
 #include <QStack>
 #include <QDebug>
 
-bool RPNSyntaxAnalyzer::Compile() const
+bool RPNSyntaxAnalyzer::Compile()
 {
     QStack<int> l_builderStack;
     l_builderStack.clear();
@@ -15,7 +15,7 @@ bool RPNSyntaxAnalyzer::Compile() const
         switch (L.getType())
         {
         case ID:
-            l_builderStack.push(_pTB->addAtomNode(L.getToken()));
+            l_builderStack.push(_treeBuilder.addAtomNode(L.getToken()));
             break;
         case OPERATOR:
             if (l_builderStack.size() >= 2 && L.getToken() != "!")
@@ -24,18 +24,18 @@ bool RPNSyntaxAnalyzer::Compile() const
                 int left = l_builderStack.pop();
 
                 if (L.getToken() == "->")
-                    l_builderStack.push(_pTB->addIfNode(left, right));
+                    l_builderStack.push(_treeBuilder.addIfNode(left, right));
                 else if (L.getToken() == "|")
-                    l_builderStack.push(_pTB->addOrNode(left, right));
+                    l_builderStack.push(_treeBuilder.addOrNode(left, right));
                 else if (L.getToken() == "&")
-                    l_builderStack.push(_pTB->addAndNode(left, right));
+                    l_builderStack.push(_treeBuilder.addAndNode(left, right));
                 else // bi implication
-                    l_builderStack.push(_pTB->addIffNode(left, right));
+                    l_builderStack.push(_treeBuilder.addIffNode(left, right));
             } // Binary op if
             else if (l_builderStack.size() >= 1 && L.getToken() == "!")
             {
                 int left = l_builderStack.pop();
-                l_builderStack.push(_pTB->addNotNode(left));
+                l_builderStack.push(_treeBuilder.addNotNode(left));
             }
             else
                 l_nSignal = 2;

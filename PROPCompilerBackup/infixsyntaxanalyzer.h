@@ -11,10 +11,15 @@ private:
                         unsigned int &signal,
                         QStack<int> &builderStack,
                         QStack<PropLexem> &tokenStack,
-                        bool &isValidated) const;
+                        bool &isValidated);
 
 public:
-    InfixSyntaxAnalyzer(PROPLexAnalyzer *pLA, PROPTreeBuilder *pTB) : PROPSyntaxAnalyzer(pLA, pTB) {}
-    bool Compile() const;
+    InfixSyntaxAnalyzer(PROPLexAnalyzer *pLA, PROPTreeBuilder treeBuilder) : PROPSyntaxAnalyzer(pLA, treeBuilder) {}
+    [[nodiscard]] bool Compile();
+    [[nodiscard]] QString getSymbolAt(qsizetype idx) const {return _treeBuilder.getSymbolAt(idx);}
+    [[nodiscard]] PROPNode getNodeAt(qsizetype idx) const {return _treeBuilder.getNodeAt(idx);}
+    [[nodiscard]] qsizetype getTreeSize() const {return _treeBuilder.getTreeSize();}
+    [[nodiscard]] QString getSymbolFromEntry(int entry) const {return _treeBuilder.getSymbolFromEntry(entry);}
+    [[nodiscard]] int getEntryFromSymbol(const QString &str) const {return _treeBuilder.getEntryFromSymbol(str);}
 };
 #endif // INFIXSYNTAXANALYZER_H

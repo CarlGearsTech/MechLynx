@@ -1,19 +1,20 @@
 #include "infixsyntaxanalyzer.h"
 #include <QDebug>
 
+/* Construye el tree */
 void InfixSyntaxAnalyzer::buildLeftToken(int &left,
                                          int &right,
                                          PropLexem &operation,
                                          unsigned int &signal,
                                          QStack<int> &builderStack,
                                          QStack<PropLexem> &tokenStack,
-                                         bool &isValidated) const
+                                         bool &isValidated)
 {
-
+    /* NOT special case.*/
     if (operation.getToken() == "!")
     {
         right = builderStack.pop();
-        operation.setTreeIdx(_pTB->addNotNode(right));
+        operation.setTreeIdx(_treeBuilder.addNotNode(right));
     }
     else
     {
@@ -32,7 +33,7 @@ void InfixSyntaxAnalyzer::buildLeftToken(int &left,
         switch (leftToken.getType())
         {
         case ID:
-            builderStack.push(_pTB->addAtomNode(leftToken.getToken()));
+            builderStack.push(_treeBuilder.addAtomNode(leftToken.getToken()));
             left = builderStack.pop();
             right = builderStack.pop();
             isValidated = true;
@@ -55,7 +56,7 @@ void InfixSyntaxAnalyzer::buildLeftToken(int &left,
     }
 }
 
-bool InfixSyntaxAnalyzer::Compile() const
+bool InfixSyntaxAnalyzer::Compile()
 {
     unsigned int l_signal = 0;
     QStack<PropLexem> l_tokenStack;
@@ -95,7 +96,7 @@ bool InfixSyntaxAnalyzer::Compile() const
                     if (l_isFirstRule)
                     {
                         l_isFirstRule = false;
-                        l_builderStack.push(_pTB->addTrueNode());
+                        l_builderStack.push(_treeBuilder.addTrueNode());
                         l_tokenStack.push(_pLA->buildToken(OPERATOR, "True"));
                     }
                     l_isRuleAvailable = true;
@@ -164,7 +165,7 @@ bool InfixSyntaxAnalyzer::Compile() const
             l_right = l_builderStack.pop();
             l_left = l_builderStack.pop();
             l_operation = _pLA->buildToken(OPERATOR, "&");
-            l_operation.setTreeIdx(_pTB->addAndNode(l_left, l_right));
+            l_operation.setTreeIdx(_treeBuilder.addAndNode(l_left, l_right));
             l_isRuleAvailable = false;
         }
         else
@@ -172,7 +173,7 @@ bool InfixSyntaxAnalyzer::Compile() const
             switch (l_rightToken.getType())
             {
             case ID:
-                l_builderStack.push(_pTB->addAtomNode(l_rightToken.getToken()));
+                l_builderStack.push(_treeBuilder.addAtomNode(l_rightToken.getToken()));
                 buildLeftToken(l_left, l_right, l_operation, l_signal, l_builderStack,
                                l_tokenStack, l_isValidated);
                 break;
@@ -193,13 +194,13 @@ bool InfixSyntaxAnalyzer::Compile() const
             if (l_isValidated)
             {
                 if (l_operation.getToken() == "->")
-                    l_operation.setTreeIdx(_pTB->addIfNode(l_left, l_right));
+                    l_operation.setTreeIdx(_treeBuilder.addIfNode(l_left, l_right));
                 else if (l_operation.getToken() == "&")
-                    l_operation.setTreeIdx(_pTB->addAndNode(l_left, l_right));
+                    l_operation.setTreeIdx(_treeBuilder.addAndNode(l_left, l_right));
                 else if (l_operation.getToken() == "|")
-                    l_operation.setTreeIdx(_pTB->addOrNode(l_left, l_right));
+                    l_operation.setTreeIdx(_treeBuilder.addOrNode(l_left, l_right));
                 else if (l_operation.getToken() == "<->")
-                    l_operation.setTreeIdx(_pTB->addIffNode(l_left, l_right));
+                    l_operation.setTreeIdx(_treeBuilder.addIffNode(l_left, l_right));
                 else
                     l_signal = 2;
                 l_isValidated = false;

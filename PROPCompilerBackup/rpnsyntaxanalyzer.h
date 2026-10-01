@@ -5,8 +5,8 @@
 class RPNSyntaxAnalyzer : public PROPSyntaxAnalyzer
 {
 public:
-    RPNSyntaxAnalyzer(PROPLexAnalyzer *pLa, PROPTreeBuilder *pTB) : PROPSyntaxAnalyzer(pLa, pTB) {}
-    virtual bool Compile() const;
+    RPNSyntaxAnalyzer(PROPLexAnalyzer *pLa, PROPTreeBuilder treeBuilder) : PROPSyntaxAnalyzer(pLa, treeBuilder) {}
+    virtual bool Compile();
 };
 
 #endif // RPNSYNTAXANALYZER_H

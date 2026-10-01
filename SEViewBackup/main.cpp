@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     PROPTreeBuilder tb;
     PROPLexAnalyzer la;
-    InfixSyntaxAnalyzer iasa(&la,&tb);
+    InfixSyntaxAnalyzer iasa(&la,tb);
     InferenceKernel ik(&tb);
 
     if(!la.pushFile(":/SEResources/KnowledgeBase")){
