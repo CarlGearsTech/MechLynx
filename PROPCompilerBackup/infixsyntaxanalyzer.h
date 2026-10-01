@@ -12,7 +12,7 @@ private:
                         QStack<int> &builderStack,
                         QStack<PropLexem> &tokenStack,
                         bool &isValidated);
-
+    bool determineResultCompilation(unsigned int l_nOpenB, unsigned int l_nClosedB, unsigned int &signal, QStack<int> &l_builderStack, QStack<PropLexem> &l_tokenStack, bool &retFlag);
 public:
     InfixSyntaxAnalyzer(PROPLexAnalyzer *pLA, PROPTreeBuilder treeBuilder) : PROPSyntaxAnalyzer(pLA, treeBuilder) {}
     [[nodiscard]] bool Compile();

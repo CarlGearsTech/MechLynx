@@ -58,71 +58,69 @@ void InfixSyntaxAnalyzer::buildLeftToken(int &left,
 
 bool InfixSyntaxAnalyzer::Compile()
 {
-    unsigned int l_signal = 0;
-    QStack<PropLexem> l_tokenStack;
-    l_tokenStack.clear();
-    unsigned int l_nErrorRow = 0;
-    unsigned int l_nErrorCol = 0;
-    bool l_isRuleAvailable = false;
-    bool l_isFirstRule = true;
-    QStack<int> l_builderStack;
-    l_builderStack.clear();
-    unsigned int l_nClosedB = 0;
-    unsigned int l_nOpenB = 0;
-    bool l_isValidated = false;
+    unsigned int signal = 0;
+    QStack<PropLexem> tokenStack;
+    tokenStack.clear();
+    unsigned int numErrorRow = 0;
+    unsigned int numErrorColumn = 0;
+    bool isRuleAvailable = false;
+    bool isFirstRule = true;
+    QStack<int> builderStack;
+    builderStack.clear();
+    unsigned int closedBrackets = 0;
+    unsigned int openBrackets = 0;
+    bool isValidated = false;
 
-    while (!l_signal)
+    while (!signal)
     {
-
-        while (!l_signal)
+        while (!signal)
         {
             PropLexem L = _pLA->getToken();
             if (L.getType() == EOL)
             {
-                ++l_nErrorRow;
-                l_nErrorCol = 0;
+                ++numErrorRow;
+                numErrorColumn = 0;
             }
             else if (L.getType() == ENDOFF)
             {
-                l_signal = 4;
+                signal = 4;
                 break;
             }
             else
             {
-                ++l_nErrorCol;
-
+                ++numErrorColumn;
                 if (L.getToken() == ";")
                 {
-                    if (l_isFirstRule)
+                    if (isFirstRule)
                     {
-                        l_isFirstRule = false;
-                        l_builderStack.push(_treeBuilder.addTrueNode());
-                        l_tokenStack.push(_pLA->buildToken(OPERATOR, "True"));
+                        isFirstRule = false;
+                        builderStack.push(_treeBuilder.addTrueNode());
+                        tokenStack.push(_pLA->buildToken(OPERATOR, "True"));
                     }
-                    l_isRuleAvailable = true;
+                    isRuleAvailable = true;
                     break;
                 }
                 else if (L.getType() == COMMENT)
                 {
-                    ++l_nErrorRow;
+                    ++numErrorRow;
                     continue;
                 }
                 else if (L.getType() == ERROR)
                 {
-                    l_signal = 2;
+                    signal = 2;
                     break;
                 }
                 else if (L.getToken() == ")")
                 {
-                    ++l_nClosedB;
+                    ++closedBrackets;
                     break;
                 }
                 else if (L.getToken() == "(")
                 {
-                    ++l_nOpenB;
+                    ++openBrackets;
                     continue;
                 }
-                l_tokenStack.push(L);
+                tokenStack.push(L);
             } // end toke else
         } // Rule while
 
@@ -130,56 +128,56 @@ bool InfixSyntaxAnalyzer::Compile()
         int l_left = 0;
 
         // EOF signal
-        if (l_signal == 4)
+        if (signal == 4)
             break;
 
         // Too many semicolons
-        if (l_isRuleAvailable && l_builderStack.size() < 2)
+        if (isRuleAvailable && builderStack.size() < 2)
         {
-            l_signal = 11;
+            signal = 11;
             break;
         }
 
         // No enough tokens to fit the operations
-        if (l_signal == 4 && l_tokenStack.size() < 2 && l_builderStack.size() != 1)
+        if (signal == 4 && tokenStack.size() < 2 && builderStack.size() != 1)
         {
-            l_signal = 5;
+            signal = 5;
             break;
         }
 
         // Ensure operation with 2 operands
-        if (l_tokenStack.size() < 2 && l_builderStack.size() != 1)
+        if (tokenStack.size() < 2 && builderStack.size() != 1)
         {
-            l_signal = 8;
+            signal = 8;
             break;
         }
 
-        if (l_signal == 2)
+        if (signal == 2)
             break;
 
-        PropLexem l_rightToken = l_tokenStack.pop();
-        PropLexem l_operation = l_tokenStack.pop();
+        PropLexem l_rightToken = tokenStack.pop();
+        PropLexem l_operation = tokenStack.pop();
 
-        if (l_isRuleAvailable)
+        if (isRuleAvailable)
         {
-            l_right = l_builderStack.pop();
-            l_left = l_builderStack.pop();
+            l_right = builderStack.pop();
+            l_left = builderStack.pop();
             l_operation = _pLA->buildToken(OPERATOR, "&");
             l_operation.setTreeIdx(_treeBuilder.addAndNode(l_left, l_right));
-            l_isRuleAvailable = false;
+            isRuleAvailable = false;
         }
         else
         {
             switch (l_rightToken.getType())
             {
             case ID:
-                l_builderStack.push(_treeBuilder.addAtomNode(l_rightToken.getToken()));
-                buildLeftToken(l_left, l_right, l_operation, l_signal, l_builderStack,
-                               l_tokenStack, l_isValidated);
+                builderStack.push(_treeBuilder.addAtomNode(l_rightToken.getToken()));
+                buildLeftToken(l_left, l_right, l_operation, signal, builderStack,
+                               tokenStack, isValidated);
                 break;
             case OPERATOR:
-                buildLeftToken(l_left, l_right, l_operation, l_signal, l_builderStack,
-                               l_tokenStack, l_isValidated);
+                buildLeftToken(l_left, l_right, l_operation, signal, builderStack,
+                               tokenStack, isValidated);
                 break;
             case EOL:
             case OPENBRACKET:
@@ -188,10 +186,10 @@ bool InfixSyntaxAnalyzer::Compile()
             case COMMENT:
             case ENDOFF:
             default:
-                l_signal = 2;
+                signal = 2;
                 break;
             } // end right token switch
-            if (l_isValidated)
+            if (isValidated)
             {
                 if (l_operation.getToken() == "->")
                     l_operation.setTreeIdx(_treeBuilder.addIfNode(l_left, l_right));
@@ -202,25 +200,18 @@ bool InfixSyntaxAnalyzer::Compile()
                 else if (l_operation.getToken() == "<->")
                     l_operation.setTreeIdx(_treeBuilder.addIffNode(l_left, l_right));
                 else
-                    l_signal = 2;
-                l_isValidated = false;
+                    signal = 2;
+                isValidated = false;
             }
         } // end else
 
-        l_builderStack.push(l_operation.getTreeIdx());
-        l_tokenStack.push(l_operation);
+        builderStack.push(l_operation.getTreeIdx());
+        tokenStack.push(l_operation);
     } // File while
 
-    if (l_nOpenB < l_nClosedB)
-        l_signal = 9;
-    if (l_nOpenB > l_nClosedB)
-        l_signal = 10;
-    if (l_signal == 4 && l_builderStack.size() == 1 && l_tokenStack.size() == 1)
-        return true;
-    if (l_tokenStack.size() > 1 && l_signal == 4)
-        l_signal = 1;
-    if (l_builderStack.size() != 1 && l_signal == 4)
-        l_signal = 3;
+    bool retFlag;
+    bool resultCompilation = determineResultCompilation(openBrackets, closedBrackets, signal, builderStack, tokenStack, retFlag);
+    if (retFlag) return resultCompilation;
 
     const QVector<QString> errors = {"Success", "Closed Brackets Missed", "Invalid Symbol",
                                      "Unexpected EOF", "EOF found", "Not enough tokens",
@@ -230,6 +221,27 @@ bool InfixSyntaxAnalyzer::Compile()
                                      "Mismatch Brackets- Closed Brackets Missed",
                                      "Over semi colons characters"};
 
-    qDebug() << errors.at(l_signal) << "1. The error was found in row: " << l_nErrorRow + 1 << "\t Column:" << l_nErrorCol;
+    qDebug() << errors.at(signal) << "1. The error was found in row: " << numErrorRow + 1 << "\t Column:" << numErrorColumn;
+    _isCompiled = false;
     return false;
+}
+
+bool InfixSyntaxAnalyzer::determineResultCompilation(unsigned int l_nOpenB, unsigned int l_nClosedB, unsigned int &signal, QStack<int> &l_builderStack, QStack<PropLexem> &l_tokenStack, bool &retFlag)
+{
+    retFlag = true;
+    if (l_nOpenB < l_nClosedB)
+        signal = 9;
+    if (l_nOpenB > l_nClosedB)
+        signal = 10;
+    if (signal == 4 && l_builderStack.size() == 1 && l_tokenStack.size() == 1)
+    {
+        _isCompiled = true;
+        return true;
+    }
+    if (l_tokenStack.size() > 1 && signal == 4)
+        signal = 1;
+    if (l_builderStack.size() != 1 && signal == 4)
+        signal = 3;
+    retFlag = false;
+    return {};
 }
