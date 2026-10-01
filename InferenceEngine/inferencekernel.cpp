@@ -6,8 +6,8 @@
 //Remember that you change the Worksapce constructor to private,
 //Making IK friend of Workspace and having interface functions to Workspace
 //from IK
-InferenceKernel::InferenceKernel(PROPTreeBuilder *tb):
-    m_pTB(tb),m_pWS(new Workspace(m_pTB)),m_bContinueInferenceProcess(true)
+InferenceKernel::InferenceKernel(PROPSyntaxAnalyzer* syntaxAnalyzer):
+    _syntaxAnalyzer(syntaxAnalyzer),m_pWS(new Workspace(&_syntaxAnalyzer->_treeBuilder)),m_bContinueInferenceProcess(true)
 {
 }
 
@@ -15,7 +15,7 @@ bool InferenceKernel::askForValue(int entry){
     QTextStream out(stdout);
     QTextStream in(stdin);
     QString selection;
-    QString symbol= m_pTB->getSymbolAt(m_pTB->getNodeAt(entry).getFirst());
+    QString symbol= _syntaxAnalyzer->_treeBuilder.getSymbolAt(_syntaxAnalyzer->_treeBuilder.getNodeAt(entry).getFirst());
 
     if(m_pWS->m_vAskedAtoms.contains(entry)){
         qDebug()<<"These atoms are asked already"<<symbol<<Qt::endl;
@@ -51,7 +51,7 @@ bool InferenceKernel::setValue2Atom(int entry, bool value){
         qDebug()<<"The atom doesn't exist in the tree"<<Qt::endl;
         return false;
     }
-    QString relAtom= m_pTB->getSymbolAt(m_pTB->getNodeAt(entry).getFirst());
+    QString relAtom= _syntaxAnalyzer->_treeBuilder.getSymbolAt(_syntaxAnalyzer->_treeBuilder.getNodeAt(entry).getFirst());
 
     if(!m_pWS->m_mRelevantAtoms.contains(entry)){
         m_pWS->m_mRelevantAtoms.insert(entry,value);
@@ -71,7 +71,7 @@ void InferenceKernel::propagate(int entry, bool value)
 {
     if(entry < 0)
         return;
-    PROPNode Node = m_pTB->getNodeAt(entry);
+    PROPNode Node = _syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
 
     switch(Node.getType()){
     case AND:
@@ -98,7 +98,7 @@ void InferenceKernel::propagate(int entry, bool value)
 
 void InferenceKernel::infer(int entry)
 {
-    const PROPNode Node = m_pTB->getNodeAt(entry);
+    const PROPNode Node = _syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
     bool isMT=false;
 
     //Modus Tollens
@@ -114,7 +114,7 @@ void InferenceKernel::infer(int entry)
 }
 
 int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
-    const PROPNode Node=m_pTB->getNodeAt(entry);
+    const PROPNode Node=_syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
 
 
     if(Node.getType()== ATOM){
@@ -203,7 +203,7 @@ int InferenceKernel::eval(int entry, Workspace::RuleType ruleType){
 
 //a1&a2&a3&a4
 bool InferenceKernel::isCube(int entry){
-    const PROPNode node=m_pTB->getNodeAt(entry);
+    const PROPNode node=_syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
 
     int first;
     int second;
@@ -245,7 +245,7 @@ bool InferenceKernel::isCube(int entry){
 
 //a1||a2||a3||a4||a5
 bool InferenceKernel::isClousure(int entry){
-    const PROPNode node=m_pTB->getNodeAt(entry);
+    const PROPNode node=_syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
 
     int first;
     int second;
@@ -292,7 +292,7 @@ void promptError(int error){
 bool InferenceKernel::isAbleModusPonens(int entry){
     logOnlyForFunctions(Q_FUNC_INFO);
 
-    const PROPNode Node=m_pTB->getNodeAt(entry);
+    const PROPNode Node=_syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
 
     bool first;
     bool second;
@@ -317,7 +317,7 @@ bool InferenceKernel::isAbleModusPonens(int entry){
 bool InferenceKernel::isAbleModusTollens(int entry){
     logOnlyForFunctions(Q_FUNC_INFO);
 
-    const PROPNode Node=m_pTB->getNodeAt(entry);
+    const PROPNode Node=_syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
 
     bool first;
     bool second;

@@ -96,7 +96,7 @@ void PROPLexAnalyzer::handleEOF(LexPropState_Type behaviorStates, PropLexem &L) 
     case LEXPROP_BEGIN_OP_STATE: //->
         L.setType(ERROR);
         return;
-    case 3:
+    case LEXPROP_ID_STATE:
         L.setType(ID);
         return;
     case LEXPROP_COMMENT_STATE:
@@ -107,6 +107,11 @@ void PROPLexAnalyzer::handleEOF(LexPropState_Type behaviorStates, PropLexem &L) 
 
 PropLexem PROPLexAnalyzer::getToken()
 {
+    if (_inputs.isEmpty())
+    {
+        throw std::runtime_error("Container is empty. Cannot process data.");
+    }
+
     PropLexem L;
     LexPropState_Type behaviorStates = LEXPROP_FIRST_LETTER_STATE;
     _fileStream.setDevice(_inputs.top());

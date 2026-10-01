@@ -3,6 +3,7 @@
 
 #include "inferenceengine_global.h"
 #include "workspace.h"
+#include "propsyntaxanalyzer.h"
 
 #include <QObject>
 #include <QSet>
@@ -18,7 +19,7 @@ signals:
     void knowledgeExhausted();
     void atomValueDemanded(int atomEntry);
 private:
-    const PROPTreeBuilder* const m_pTB;
+    const PROPSyntaxAnalyzer* const _syntaxAnalyzer;
     Workspace* const m_pWS;
     bool m_bContinueInferenceProcess;
 
@@ -58,14 +59,14 @@ public:
     bool doesConclusionExists(int index);
     QList<int> getConclusionsByValueKeys()const{return m_pWS->m_mConclusionValues.keys();}
     QVector<int> getConclusions() const{return m_pWS->m_vConclusions;}
-    PROPNode getNodeAt(qsizetype idx)const {return m_pTB->getNodeAt(idx);}
-    QString getSymbolAt(qsizetype idx)const {return m_pTB->getSymbolAt(idx);}
+    PROPNode getNodeAt(qsizetype idx)const {return _syntaxAnalyzer->_treeBuilder.getNodeAt(idx);}
+    QString getSymbolAt(qsizetype idx)const {return _syntaxAnalyzer->_treeBuilder.getSymbolAt(idx);}
     QVector<int> getRules()const{return m_pWS->m_vRules;}
     auto getAntecedents()const{return m_pWS->m_mmAntecedents;}
     auto getConsequents()const{return m_pWS->m_mmConsequents;}
-    QString getSymbolFromEntry(int entry)const{return m_pTB->getSymbolFromEntry(entry);}
-    int getEntryFromSymbol(const QString& str)const{return m_pTB->getEntryFromSymbol(str);}
-    InferenceKernel(PROPTreeBuilder* tb);
+    QString getSymbolFromEntry(int entry)const{return _syntaxAnalyzer->_treeBuilder.getSymbolFromEntry(entry);}
+    int getEntryFromSymbol(const QString& str)const{return _syntaxAnalyzer->_treeBuilder.getEntryFromSymbol(str);}
+    InferenceKernel(PROPSyntaxAnalyzer* syntaxAnalyzer);
     ~InferenceKernel();
     bool askForValue(int entry);
     bool setValue2Atom(int entry,bool value);

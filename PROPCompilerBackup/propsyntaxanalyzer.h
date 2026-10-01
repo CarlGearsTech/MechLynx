@@ -7,13 +7,12 @@ class PROPSyntaxAnalyzer
 {
 protected:
     PROPLexAnalyzer *_pLA;
-    PROPTreeBuilder _treeBuilder;
     bool _isCompiled = false;
 private:
     virtual bool Compile() = 0;
 public:
+    PROPTreeBuilder _treeBuilder;
     PROPSyntaxAnalyzer(PROPLexAnalyzer *pLa, PROPTreeBuilder treeBuilder) : _pLA(pLa), _treeBuilder(treeBuilder) {}
     virtual ~PROPSyntaxAnalyzer() {}
 };
-
 #endif // PROPSYNTAXANALYZER_H

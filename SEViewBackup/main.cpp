@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     PROPTreeBuilder tb;
     PROPLexAnalyzer la;
     InfixSyntaxAnalyzer iasa(&la,tb);
-    InferenceKernel ik(&tb);
+    InferenceKernel ik(&iasa);
 
     if(!la.pushFile(":/SEResources/KnowledgeBase")){
         QMessageBox::critical(NULL,"Knowledge Base was not opened correctly",
