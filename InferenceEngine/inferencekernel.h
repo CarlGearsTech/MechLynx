@@ -9,8 +9,6 @@
 #include <QSet>
 #include <QList>
 
-class QuestionDialog;
-
 class INFERENCEENGINESHARED_EXPORT InferenceKernel : public QObject
 {
     Q_OBJECT
@@ -59,13 +57,13 @@ public:
     bool doesConclusionExists(int index);
     QList<int> getConclusionsByValueKeys()const{return m_pWS->m_mConclusionValues.keys();}
     QVector<int> getConclusions() const{return m_pWS->m_vConclusions;}
-    PROPNode getNodeAt(qsizetype idx)const {return _syntaxAnalyzer->_treeBuilder.getNodeAt(idx);}
-    QString getSymbolAt(qsizetype idx)const {return _syntaxAnalyzer->_treeBuilder.getSymbolAt(idx);}
+    PROPNode getNodeAt(qsizetype idx)const {return _syntaxAnalyzer->getNodeAt(idx);}
+    QString getSymbolAt(qsizetype idx)const {return _syntaxAnalyzer->getSymbolAt(idx);}
     QVector<int> getRules()const{return m_pWS->m_vRules;}
     auto getAntecedents()const{return m_pWS->m_mmAntecedents;}
     auto getConsequents()const{return m_pWS->m_mmConsequents;}
-    QString getSymbolFromEntry(int entry)const{return _syntaxAnalyzer->_treeBuilder.getSymbolFromEntry(entry);}
-    int getEntryFromSymbol(const QString& str)const{return _syntaxAnalyzer->_treeBuilder.getEntryFromSymbol(str);}
+    QString getSymbolFromEntry(int entry)const{return _syntaxAnalyzer->getSymbolFromEntry(entry);}
+    int getEntryFromSymbol(const QString& str)const{return _syntaxAnalyzer->getEntryFromSymbol(str);}
     InferenceKernel(PROPSyntaxAnalyzer* syntaxAnalyzer);
     ~InferenceKernel();
     bool askForValue(int entry);
