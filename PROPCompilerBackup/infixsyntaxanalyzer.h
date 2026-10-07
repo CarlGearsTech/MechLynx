@@ -15,6 +15,7 @@ private:
     bool determineResultCompilation(unsigned int l_nOpenB, unsigned int l_nClosedB, unsigned int &signal, QStack<int> &l_builderStack, QStack<PropLexem> &l_tokenStack, bool &retFlag);
 public:
     InfixSyntaxAnalyzer(PROPLexAnalyzer *pLA, PROPTreeBuilder treeBuilder) : PROPSyntaxAnalyzer(pLA, treeBuilder) {}
+    explicit InfixSyntaxAnalyzer(PROPLexAnalyzer *pLA) : PROPSyntaxAnalyzer(pLA) {}
     [[nodiscard]] bool Compile();
     [[nodiscard]] QString getSymbolAt(qsizetype idx) const {return _treeBuilder.getSymbolAt(idx);}
     [[nodiscard]] PROPNode getNodeAt(qsizetype idx) const {return _treeBuilder.getNodeAt(idx);}

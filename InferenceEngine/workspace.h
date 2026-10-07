@@ -11,12 +11,9 @@ class Workspace
 public:
     friend class InferenceKernel;
     enum RuleType{ModusTollens,ModusPonens,NoType};
-
-    //Make Inference Kernel friend of Workspace...
 private:
-    explicit Workspace(const PROPTreeBuilder* const pTB); //Maybe the parameter is const.
+    explicit Workspace(const PROPTreeBuilder* const pTB);
     const PROPTreeBuilder* const m_pTB;
-
     QMultiMap<int,int> m_mmAntecedents;
     QMultiMap<int,int> m_mmConsequents;
     QVector<int> m_vRules;
@@ -30,9 +27,7 @@ private:
     QVector<int> m_vIrrelevantRules;
     QVector<int> m_vAskedAtoms;
     QMap<int,bool> m_mConclusionValues;
-
-    inline void InsertAntecedentOrConsequent(int rule, int entry,bool isConsequent);
-
+    void InsertAntecedentOrConsequent(int rule, int entry,bool isConsequent);
 public:
     void reset();
     void resetRules();

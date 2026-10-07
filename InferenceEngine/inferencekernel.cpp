@@ -69,30 +69,30 @@ bool InferenceKernel::setValue2Atom(int entry, bool value){
 
 void InferenceKernel::propagate(int entry, bool value)
 {
-    if(entry < 0)
+    if (entry < 0)
         return;
     PROPNode Node = _syntaxAnalyzer->_treeBuilder.getNodeAt(entry);
 
-    switch(Node.getType()){
-    case AND:
-    case OR:
-    case IF:
-    case IFF:
-        propagate(Node.getFirst(),value);
-        propagate(Node.getSecond(),value);
-        break;
-
-    case NOT:
-        if(value==1)
-            value=0;
-        propagate(Node.getFirst(),value);
-        break;
-
-    case ATOM:
-        m_pWS->m_mRelevantAtoms.insert(entry,value);
-        break;
-    case TRUE:
-        break;
+    switch (Node.getType())
+    {
+        case AND:
+        case OR:
+        case IF:
+        case IFF:
+            propagate(Node.getFirst(), value);
+            propagate(Node.getSecond(), value);
+            break;
+        case NOT:
+            if (value == 1)
+                value = 0;
+            propagate(Node.getFirst(), value);
+            break;
+        case ATOM:
+            m_pWS->m_mRelevantAtoms.insert(entry, value);
+            break;
+        case MAX_NODE_TYPE:
+        case TRUE:
+            break;
     }
 }
 

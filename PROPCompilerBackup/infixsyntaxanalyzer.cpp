@@ -58,17 +58,17 @@ void InfixSyntaxAnalyzer::buildLeftToken(int &left,
 
 bool InfixSyntaxAnalyzer::Compile()
 {
-    unsigned int signal = 0;
+    auto signal = 0u;
     QStack<PropLexem> tokenStack;
     tokenStack.clear();
-    unsigned int numErrorRow = 0;
-    unsigned int numErrorColumn = 0;
+    auto numErrorRow = 0u;
+    auto numErrorColumn = 0u;
     bool isRuleAvailable = false;
     bool isFirstRule = true;
     QStack<int> builderStack;
     builderStack.clear();
-    unsigned int closedBrackets = 0;
-    unsigned int openBrackets = 0;
+    auto closedBrackets = 0u;
+    auto openBrackets = 0u;
     bool isValidated = false;
 
     while (!signal)
@@ -222,7 +222,6 @@ bool InfixSyntaxAnalyzer::Compile()
                                      "Over semi colons characters"};
 
     qDebug() << errors.at(signal) << "1. The error was found in row: " << numErrorRow + 1 << "\t Column:" << numErrorColumn;
-    _isCompiled = false;
     return false;
 }
 
@@ -234,10 +233,7 @@ bool InfixSyntaxAnalyzer::determineResultCompilation(unsigned int l_nOpenB, unsi
     if (l_nOpenB > l_nClosedB)
         signal = 10;
     if (signal == 4 && l_builderStack.size() == 1 && l_tokenStack.size() == 1)
-    {
-        _isCompiled = true;
         return true;
-    }
     if (l_tokenStack.size() > 1 && signal == 4)
         signal = 1;
     if (l_builderStack.size() != 1 && signal == 4)

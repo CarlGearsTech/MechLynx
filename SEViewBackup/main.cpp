@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
     PROPTreeBuilder tb;
     PROPLexAnalyzer la;
     InfixSyntaxAnalyzer iasa(&la,tb);
-    InferenceKernel ik(&iasa);
 
     if(!la.pushFile(":/SEResources/KnowledgeBase")){
         QMessageBox::critical(NULL,"Knowledge Base was not opened correctly",
@@ -30,6 +29,7 @@ int main(int argc, char *argv[])
                               QMessageBox::StandardButton::Ok);
         return 0;
     }
+    InferenceKernel ik(&iasa);
     SEView w(&ik);
     w.show();
 
