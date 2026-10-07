@@ -1,9 +1,6 @@
 #include "workspace.h"
 #include "proptreebuilder.h"
 
-Workspace::Workspace(const PROPTreeBuilder * const pTB):m_pTB(pTB){
-
-}
 
 void Workspace::InsertAntecedentOrConsequent(int rule, int entry, bool isConsequent){
     if(!isConsequent)
@@ -31,9 +28,9 @@ void Workspace::reset(){
 void Workspace::resetRules()
 {
     m_vRules.clear();
-    for(qsizetype i=0; i < m_pTB->getTreeSize() ; ++i)
+    for(qsizetype i=0; i < _treeBuilder.getTreeSize() ; ++i)
     {
-        const auto& node = m_pTB->getNodeAt(i);
+        const auto& node = _treeBuilder.getNodeAt(i);
         if(node.getType() == IF)
             m_vRules.append(i);
     }
@@ -44,10 +41,10 @@ void Workspace::resetAntecedentsAndConsequents(){
     m_mConsequentsValue.clear();
 
     for(int i=0, lentry=0,rentry=0;i<m_vRules.size();++i){
-        lentry=m_pTB->getNodeAt(m_vRules.at(i)).getFirst();
+        lentry=_treeBuilder.getNodeAt(m_vRules.at(i)).getFirst();
         pickAtom(lentry,m_vRules.at(i),0);
 
-        rentry=m_pTB->getNodeAt(m_vRules.at(i)).getSecond();
+        rentry=_treeBuilder.getNodeAt(m_vRules.at(i)).getSecond();
         pickAtom(rentry,m_vRules.at(i),1);
     }
 }
@@ -55,16 +52,16 @@ void Workspace::resetAntecedentsAndConsequents(){
 void Workspace::pickAtom(int entry, int rule, bool isConsequent){
     //Reach a atom type
     //Check operationst
-    if(m_pTB->getNodeAt(entry).getType() == ATOM){
+    if(_treeBuilder.getNodeAt(entry).getType() == ATOM){
         InsertAntecedentOrConsequent(rule,entry,isConsequent);
         return;
     }
 
     //Operation type and verify its first and second
     //Check left part of the operation
-    int first=m_pTB->getNodeAt(entry).getFirst();
+    int first=_treeBuilder.getNodeAt(entry).getFirst();
     //Operation Type
-    if(m_pTB->getNodeAt(first).getType() != ATOM){
+    if(_treeBuilder.getNodeAt(first).getType() != ATOM){
         if(!isConsequent)
             pickAtom(first,rule,0);
         else
@@ -75,12 +72,12 @@ void Workspace::pickAtom(int entry, int rule, bool isConsequent){
         InsertAntecedentOrConsequent(rule,first,isConsequent);
 
     //Right part
-    if(m_pTB->getNodeAt(entry).getSecond() < 0)
+    if(_treeBuilder.getNodeAt(entry).getSecond() < 0)
         return;
-    int second=m_pTB->getNodeAt(entry).getSecond();
+    int second=_treeBuilder.getNodeAt(entry).getSecond();
     if(second != 1)
     {
-        if(m_pTB->getNodeAt(second).getType() != ATOM)
+        if(_treeBuilder.getNodeAt(second).getType() != ATOM)
         {
             if(!isConsequent)
                 pickAtom(second,rule,0);
@@ -105,7 +102,7 @@ void Workspace::resetConclusions(){
 }
 
 void Workspace::resetDeniedAtoms(){
-    for(qsizetype i=0; i<m_pTB->getTreeSize();++i)
-        if(m_pTB->getNodeAt(i).getType() == NOT)
-            m_vDeniedAtoms.append(m_pTB->getNodeAt(i).getFirst());
+    for(qsizetype i=0; i<_treeBuilder.getTreeSize();++i)
+        if(_treeBuilder.getNodeAt(i).getType() == NOT)
+            m_vDeniedAtoms.append(_treeBuilder.getNodeAt(i).getFirst());
 }

@@ -12,8 +12,8 @@ public:
     friend class InferenceKernel;
     enum RuleType{ModusTollens,ModusPonens,NoType};
 private:
-    explicit Workspace(const PROPTreeBuilder* const pTB);
-    const PROPTreeBuilder* const m_pTB;
+    Workspace(const PROPTreeBuilder& treeBuilder):_treeBuilder(treeBuilder){}
+    PROPTreeBuilder _treeBuilder;
     QMultiMap<int,int> m_mmAntecedents;
     QMultiMap<int,int> m_mmConsequents;
     QVector<int> m_vRules;

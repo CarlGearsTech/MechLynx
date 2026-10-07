@@ -7,7 +7,7 @@
 //Making IK friend of Workspace and having interface functions to Workspace
 //from IK
 InferenceKernel::InferenceKernel(PROPSyntaxAnalyzer* syntaxAnalyzer):
-    _syntaxAnalyzer(syntaxAnalyzer),m_pWS(new Workspace(&_syntaxAnalyzer->_treeBuilder)),m_bContinueInferenceProcess(true)
+    _syntaxAnalyzer(syntaxAnalyzer),m_pWS(new Workspace(_syntaxAnalyzer->getTreeBuilder())),m_bContinueInferenceProcess(true)
 {
 }
 
