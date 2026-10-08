@@ -1,13 +1,12 @@
 #ifndef INFERENCEKERNEL_H
 #define INFERENCEKERNEL_H
 
-#include "inferenceengine_global.h"
-#include "workspace.h"
-#include "propsyntaxanalyzer.h"
-
 #include <QObject>
 #include <QSet>
 #include <QList>
+#include "inferenceengine_global.h"
+#include "workspace.h"
+#include "propsyntaxanalyzer.h"
 
 class INFERENCEENGINESHARED_EXPORT InferenceKernel : public QObject
 {
@@ -16,14 +15,15 @@ signals:
     void displayConclusions(QList<int> conclusions);
     void knowledgeExhausted();
     void atomValueDemanded(int atomEntry);
-private:
-    const PROPSyntaxAnalyzer* const _syntaxAnalyzer;
-    Workspace* const m_pWS;
-    bool m_bContinueInferenceProcess;
 
-    QList<int> conclusionsToCheck;
-    QList<int> atomsToCheck;
-    QList<int> conclusionsToDisplay;
+private:
+    const PROPSyntaxAnalyzer *const _syntaxAnalyzer;
+    Workspace *const _workspace;
+    bool _isInferenceActive;
+
+    QList<int> _conclusionsToProcess;
+    QList<int> _atomsToProcess;
+    QList<int> _conclusionsToDisplay;
 
     void AddToConsequentsIfIsAbleMP(QVector<int> atomsToCheck);
     void addToAtomsToCheck_IfIsAbleModusPonens(int entry);
@@ -52,23 +52,23 @@ private:
     int setNewInferredRuleAmount();
 
 public:
-    QList<int> getConsequentsValues(int index)const{return m_pWS->m_mmConsequents.values(index);}
-    QList<int> getAntecedentsValues(int index)const{return m_pWS->m_mmAntecedents.values(index);}
-    bool doesConclusionExists(int index);
-    QList<int> getConclusionsByValueKeys()const{return m_pWS->m_mConclusionValues.keys();}
-    QVector<int> getConclusions() const{return m_pWS->m_vConclusions;}
-    PROPNode getNodeAt(qsizetype idx)const {return _syntaxAnalyzer->getNodeAt(idx);}
-    QString getSymbolAt(qsizetype idx)const {return _syntaxAnalyzer->getSymbolAt(idx);}
-    QVector<int> getRules()const{return m_pWS->m_vRules;}
-    auto getAntecedents()const{return m_pWS->m_mmAntecedents;}
-    auto getConsequents()const{return m_pWS->m_mmConsequents;}
-    QString getSymbolFromEntry(int entry)const{return _syntaxAnalyzer->getSymbolFromEntry(entry);}
-    int getEntryFromSymbol(const QString& str)const{return _syntaxAnalyzer->getEntryFromSymbol(str);}
-    InferenceKernel(PROPSyntaxAnalyzer* syntaxAnalyzer);
+    InferenceKernel(const PROPSyntaxAnalyzer *const pSyntaxAnalyzer);
     ~InferenceKernel();
+    QList<int> getConsequentsValues(int index) const { return _workspace->_mMConsequents.values(index); }
+    QList<int> getAntecedentsValues(int index) const { return _workspace->_mMapAntecedents.values(index); }
+    bool doesConclusionExists(int index);
+    QList<int> getConclusionsByValueKeys() const { return _workspace->_mConclusionsValues.keys(); }
+    QVector<int> getConclusions() const { return _workspace->_conclusions; }
+    PROPNode getNodeAt(qsizetype idx) const { return _syntaxAnalyzer->getNodeAt(idx); }
+    QString getSymbolAt(qsizetype idx) const { return _syntaxAnalyzer->getSymbolAt(idx); }
+    QVector<int> getRules() const { return _workspace->_rules; }
+    auto getAntecedents() const { return _workspace->_mMapAntecedents; }
+    auto getConsequents() const { return _workspace->_mMConsequents; }
+    QString getSymbolFromEntry(int entry) const { return _syntaxAnalyzer->getSymbolFromEntry(entry); }
+    int getEntryFromSymbol(const QString &str) const { return _syntaxAnalyzer->getEntryFromSymbol(str); }
     bool askForValue(int entry);
-    bool setValue2Atom(int entry,bool value);
-    void propagate(int entry,bool value);
+    bool setValue2Atom(int entry, bool value);
+    void propagate(int entry, bool value);
     void infer(int entry);
     int eval(int entry, Workspace::RuleType isConsequent);
     bool isCube(int entry);
@@ -77,12 +77,12 @@ public:
     bool isAbleModusTollens(int entry);
     bool areVerifiedNewConclusions(int entry);
     void setAtomsToCheckFromConsequentsIfAbleMP(int entry);
-    void setContinueInference(bool s){m_bContinueInferenceProcess=s;}
-    void forwardChainning(const QVector<int>& rules);
+    void setContinueInference(bool s) { _isInferenceActive = s; }
+    void forwardChainning(const QVector<int> &rules);
     void backwardChainning(QSet<int> k);
-    QVector<int> getResettedRules()const;
+    QVector<int> getResettedRules() const;
     void inferConsequents(int currentRuleEntry);
-    void resetWorkspace(){m_pWS->reset();}
+    void resetWorkspace() { _workspace->reset(); }
 };
 
 #endif // INFERENCEKERNEL_H

@@ -14,19 +14,19 @@ public:
 private:
     Workspace(const PROPTreeBuilder& treeBuilder):_treeBuilder(treeBuilder){}
     PROPTreeBuilder _treeBuilder;
-    QMultiMap<int,int> m_mmAntecedents;
-    QMultiMap<int,int> m_mmConsequents;
-    QVector<int> m_vRules;
-    QVector<int> m_vConclusions;
-    QVector<int> m_vDeniedAtoms;
-    QMap<int,bool> m_mRelevantAtoms;
-    QMap<int,bool> m_mAntecedentsValue;
-    QMap<int,bool> m_mConsequentsValue;
-    QVector<int> m_vInferredRules;
-    QMap<int,RuleType> m_mRuleTypes;
-    QVector<int> m_vIrrelevantRules;
-    QVector<int> m_vAskedAtoms;
-    QMap<int,bool> m_mConclusionValues;
+    QMultiMap<int,int> _mMapAntecedents;
+    QMultiMap<int,int> _mMConsequents;
+    QVector<int> _rules;
+    QVector<int> _conclusions;
+    QVector<int> _deniedAtoms;
+    QMap<int,bool> _mRelevantAtoms;
+    QMap<int,bool> _mAntecedentsValues;
+    QMap<int,bool> _mConsequentsValues;
+    QMap<int,bool> _mConclusionsValues;
+    QMap<int,RuleType> _mRuleTypes;
+    QVector<int> _inferredRules;
+    QVector<int> _irrelevantRules;
+    QVector<int> _askedAtoms;
     void InsertAntecedentOrConsequent(int rule, int entry,bool isConsequent);
 public:
     void reset();

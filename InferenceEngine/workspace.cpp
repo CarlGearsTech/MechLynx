@@ -2,11 +2,12 @@
 #include "proptreebuilder.h"
 
 
-void Workspace::InsertAntecedentOrConsequent(int rule, int entry, bool isConsequent){
+void Workspace::InsertAntecedentOrConsequent(int rule, int entry, bool isConsequent)
+{
     if(!isConsequent)
-        m_mmAntecedents.insert(rule,entry);
+        _mMapAntecedents.insert(rule,entry);
     else
-        m_mmConsequents.insert(rule,entry);
+        _mMConsequents.insert(rule,entry);
 }
 
 void Workspace::reset(){
@@ -15,37 +16,37 @@ void Workspace::reset(){
     resetConclusions();
     resetDeniedAtoms();
     resetRules();
-    m_mRuleTypes.clear();
-    m_mAntecedentsValue.clear();
-    m_mConsequentsValue.clear();
-    m_vAskedAtoms.clear();
-    m_vInferredRules.clear();
-    m_vIrrelevantRules.clear();
-    m_mConclusionValues.clear();
-    m_mRelevantAtoms.clear();
+    _mRuleTypes.clear();
+    _mAntecedentsValues.clear();
+    _mConsequentsValues.clear();
+    _askedAtoms.clear();
+    _inferredRules.clear();
+    _irrelevantRules.clear();
+    _mConclusionsValues.clear();
+    _mRelevantAtoms.clear();
 }
 
 void Workspace::resetRules()
 {
-    m_vRules.clear();
+    _rules.clear();
     for(qsizetype i=0; i < _treeBuilder.getTreeSize() ; ++i)
     {
         const auto& node = _treeBuilder.getNodeAt(i);
         if(node.getType() == IF)
-            m_vRules.append(i);
+            _rules.append(i);
     }
 }
 
 void Workspace::resetAntecedentsAndConsequents(){
-    m_mmAntecedents.clear();
-    m_mConsequentsValue.clear();
+    _mMapAntecedents.clear();
+    _mConsequentsValues.clear();
 
-    for(int i=0, lentry=0,rentry=0;i<m_vRules.size();++i){
-        lentry=_treeBuilder.getNodeAt(m_vRules.at(i)).getFirst();
-        pickAtom(lentry,m_vRules.at(i),0);
+    for(int i=0, lentry=0,rentry=0;i<_rules.size();++i){
+        lentry=_treeBuilder.getNodeAt(_rules.at(i)).getFirst();
+        pickAtom(lentry,_rules.at(i),0);
 
-        rentry=_treeBuilder.getNodeAt(m_vRules.at(i)).getSecond();
-        pickAtom(rentry,m_vRules.at(i),1);
+        rentry=_treeBuilder.getNodeAt(_rules.at(i)).getSecond();
+        pickAtom(rentry,_rules.at(i),1);
     }
 }
 
@@ -90,19 +91,19 @@ void Workspace::pickAtom(int entry, int rule, bool isConsequent){
 }
 
 void Workspace::resetConclusions(){
-    m_vConclusions.clear();
+    _conclusions.clear();
 
-    QList<int> consequentsAtoms=m_mmConsequents.values();
-    QList<int> antecedentsAtoms=m_mmAntecedents.values();
+    QList<int> consequentsAtoms=_mMConsequents.values();
+    QList<int> antecedentsAtoms=_mMapAntecedents.values();
 
     for(unsigned int i=0U;i<consequentsAtoms.size();++i)
         if(!antecedentsAtoms.contains(consequentsAtoms.at(i)))
-            if(!m_vConclusions.contains(consequentsAtoms.at(i)))
-                m_vConclusions.append(consequentsAtoms.at(i));
+            if(!_conclusions.contains(consequentsAtoms.at(i)))
+                _conclusions.append(consequentsAtoms.at(i));
 }
 
 void Workspace::resetDeniedAtoms(){
     for(qsizetype i=0; i<_treeBuilder.getTreeSize();++i)
         if(_treeBuilder.getNodeAt(i).getType() == NOT)
-            m_vDeniedAtoms.append(_treeBuilder.getNodeAt(i).getFirst());
+            _deniedAtoms.append(_treeBuilder.getNodeAt(i).getFirst());
 }
